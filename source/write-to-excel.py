@@ -1,29 +1,31 @@
 # pip install xlsxwriter 
-
 import xlsxwriter
 
+# Class to contain the Write to excel functions
 class writeToExcel:
 
+	# Initialize function
 	def __init__(self, workbook) -> None:
 		self.workbook = workbook
 
+	# Function to create a new excel workbook
 	def	createWorkbook(self):
 		file = xlsxwriter.Workbook(self.workbook)
-
 		return file
 	
+	# Function to close the opend workbook
 	def closeWorkbook(self, workbook):
 		workbook.close()
 
+	# Function to create a new worksheet
 	def createWorksheet(self, workbook, sheet):
 		worksheet = workbook.add_worksheet(sheet)
-
 		return worksheet
 	
+	# Function to define the initial row & column
 	def defineRowColumn(self, rowNum, columnNum):
 		row = rowNum
 		col = columnNum
-
 		return row, col
 
 excel = writeToExcel("example.xlsx")
