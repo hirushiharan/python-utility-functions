@@ -19,19 +19,25 @@ class ExcelReader:
         if self.selected_columns is None:
             self.selected_columns = self.df.columns
 
+        # Initialize an empty list to store dictionaries for each row
+        rows_data = []
+
         # Iterate through each row
         for index, row in self.df.iterrows():
-            # Access values in selected columns for the current row
-            values = [row[column] for column in self.selected_columns]
+            # Create a dictionary for the current row
+            row_data = {column: row[column] for column in self.selected_columns}
+            
+            # Append the dictionary to the list
+            rows_data.append(row_data)
 
-            # Print or process the values as needed
-            print(values)
+        # Return the list of dictionaries
+        return rows_data
 
 # Example usage
-excel_reader_5_columns = ExcelReader('sample-debt-upload-data.xlsx', selected_columns=['debtorName', 'debtorType', 'debtorEmail', 'city', 'state'])
-excel_reader_5_columns.read_excel()
-excel_reader_5_columns.iterate_rows()
+excel_reader_6_columns = re.ExcelReader('./assets/sample-debt-upload-data.xlsx', selected_columns=['city', 'state'])
+excel_reader_6_columns.read_excel()
+values = excel_reader_6_columns.iterate_rows()
 
-excel_reader_4_columns = ExcelReader('sample-debt-upload-data.xlsx', selected_columns=['debtorName', 'debtorType', 'debtorEmail', 'state'])
-excel_reader_4_columns.read_excel()
-excel_reader_4_columns.iterate_rows()
+# Print the list of dictionaries
+for row_data in values:
+    print(row_data)
