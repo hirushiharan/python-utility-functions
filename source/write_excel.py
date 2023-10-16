@@ -1,4 +1,3 @@
-# pip install xlsxwriter 
 import xlsxwriter
 
 # Class to contain the Write to excel functions
