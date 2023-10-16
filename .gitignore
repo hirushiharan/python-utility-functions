@@ -132,4 +132,4 @@ dmypy.json
 .vscode
 
 # Files
-example.xlsx
+/samples
