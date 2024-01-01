@@ -10,10 +10,14 @@ def rename(old_name, new_name):
     os.rename(old_name, new_name)
 
 
-PATH = r'D:\dsa\3-lifecycle\2-research-study\1-project\0-sign-language-translator\1-code\hand-gesture-recognition-mediapipe\assets\videos'
-folders = getPaths(PATH)
+PATH = 'D:\images\Walpapers'
+files = getPaths(PATH)
+count = 0
 
-for folder in folders:
-    path = os.path.join(PATH, folder)
-    sub_folders = getPaths(path)
-    print(sub_folders)
+for file in files:
+    extension = file.split(".")
+    count += 1
+    new_name = "wallpaper-" + str(count) + "." + extension[len(extension)-1]
+    old_path = os.path.join(PATH, file)
+    new_path = os.path.join(PATH, new_name)
+    rename(old_path, new_path)
