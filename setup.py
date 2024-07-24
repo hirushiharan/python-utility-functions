@@ -3,7 +3,6 @@ from pathlib import Path
 
 # Read the contents of your README file
 here = Path(__file__).parent
-long_description = (here / 'README.md').read_text()
 
 # Read the requirements from requirements.txt
 def parse_requirements(filename):
@@ -14,7 +13,8 @@ setup(
     name='utility-lib-python',
     version='0.1.0',
     description='A collection of utility scripts for working with files, Excel, logging, and database connections.',
-    long_description=long_description,
+    long_description="""Welcome to the Python Utils repository! This project contains a collection of utility scripts written in Python for various purposes. Each script focuses on specific functionalities that can be reused across different projects.
+    Check GitHub for more details.""",
     long_description_content_type='text/markdown',
     author='Hirushiharan',
     author_email='hirushiharant@gmail.com',
