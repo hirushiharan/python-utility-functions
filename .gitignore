@@ -132,5 +132,4 @@ dmypy.json
 .vscode
 
 # Files
-/assets
-source/test.py
+/logs
