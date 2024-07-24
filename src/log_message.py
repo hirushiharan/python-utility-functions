@@ -1,3 +1,34 @@
+"""
+This script provides a simple logging mechanism that supports logging messages 
+with different levels (INFO, WARNING, ERROR) to both the console and a log file 
+in JSON format. It also includes log file rotation to manage log file size.
+
+Functions:
+- create_log_file(): Ensures the log file exists by creating it if it does not.
+- rotate_log_file(): Rotates the log file when its size exceeds the maximum allowed size (5 MB).
+- log(message: str, level: str = INFO): Logs messages with a timestamp and a specific log level.
+
+Constants:
+- INFO: Log level for informational messages.
+- WARNING: Log level for warning messages.
+- ERROR: Log level for error messages.
+- MAX_LOG_SIZE: Maximum size of the log file before rotation (5 MB).
+- LOG_FILE: Path to the log file.
+
+Usage:
+- Call the log function with a message and an optional log level to log messages.
+- The script will automatically handle log file creation and rotation.
+
+Example:
+    log("This is an info message")
+    log("This is a warning message", level=WARNING)
+    log("This is an error message", level=ERROR)
+
+Note:
+- Ensure the LOG_FILE path is correctly set to the desired log file location.
+- The log messages are written in JSON format to facilitate easy parsing.
+"""
+
 import json
 from datetime import datetime
 from pathlib import Path
