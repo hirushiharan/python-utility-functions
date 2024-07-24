@@ -6,19 +6,24 @@ Welcome to the Python Utils repository! This project contains a collection of ut
 
 The project structure is as follows:
 
-    python-utils/
+    python-utility-functions/
     │
     ├── .gitignore
     ├── .env
     ├── src/
-    │ └── excel_functions.py
-    │ └── file_functions.py
-    │ └── log_message.py
-    │ └── sql_connection.py
+    │   ├── __init__.py
+    │   ├── excel_functions.py
+    │   ├── file_functions.py
+    │   ├── log_message.py
+    │   └── sql_connection.py
+    ├── tests/
+    │   ├── test_excel_functions.py
+    │   ├── test_file_functions.py
+    │   ├── test_log_message.py
+    │   └── test_sql_connection.py
     ├── requirements.txt
     ├── README.md
     └── LICENSE 
-
 
 ## Components
 
@@ -78,7 +83,7 @@ Make sure to install the required packages listed in `requirements.txt`:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/python-utils.git
+   git clone https://github.com/hirushiharan/python-utility-functions.git
    ```
 2. Navigate to the project directory:
     ```
@@ -93,13 +98,16 @@ Make sure to install the required packages listed in `requirements.txt`:
 
 Create a .env file in the root directory of the project with the following format:
 
-    ```bash
     # Database configuration
     DB_HOST=your_db_host
     DB_USER=your_db_user
     DB_PASSWORD=your_db_password
     DB_NAME=your_db_name
-    ```
+    
+
+## Python Library
+
+This project is available as a Python library on PyPI. You can find it [utility-lib-python](https://pypi.org/project/utility-lib-python/0.1.0/).
 
 ## Contributing
 
@@ -107,7 +115,9 @@ Contributions are welcome! Please open an issue or submit a pull request if you 
 
 ## Authors
 
-- For any questions or inquiries, please contact Hirushiharan Thevendran – [LinkedIn](https://www.linkedin.com/in/hirushiharan-thevendran-a08a82152?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3B54o2t%2B3cRw6IQKiNxmk27A%3D%3D)
+- For any questions or inquiries, please contact Hirushiharan Thevendran 
+    --[LinkedIn](https://www.linkedin.com/in/hirushiharan-thevendran-a08a82152?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3B54o2t%2B3cRw6IQKiNxmk27A%3D%3D)
+    --[Email](hirushiharant@gmail.com)
 
 ## License
 
