@@ -107,7 +107,7 @@ Create a .env file in the root directory of the project with the following forma
 
 ## Python Library
 
-This project is available as a Python library on PyPI. You can find it [utility-lib-python](https://pypi.org/project/utility-lib-python/0.1.0/).
+This project is available as a Python library on PyPI. You can find it [utility-lib-python](https://pypi.org/project/utility-lib-python/0.1.1/).
 
 ## Contributing
 
