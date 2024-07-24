@@ -1,6 +1,6 @@
 """
 This script renames all files in a specified directory to a sequentially 
-numbered format with the prefix 'wallpaper-'.
+numbered format with the prefix .
 
 Functions:
 - get_paths(path): Returns a list of files and directories in the given path.
@@ -9,7 +9,7 @@ Functions:
 
 Usage:
 - Ensure the 'path' variable in the main function is set to the target directory.
-- Run the script to rename files as 'wallpaper-1', 'wallpaper-2', etc., based on their original order.
+- Run the script to rename files as '<PREFIX>-1', '<PREFIX>-2', etc., based on their original order.
 
 Note:
 - This script does not handle subdirectories; it processes files in the specified directory only.
@@ -43,11 +43,11 @@ def rename_file(old_name, new_name):
 def main():
     """
     Main function to rename all files in the specified directory to a 
-    sequentially numbered format with the prefix 'wallpaper-'.
+    sequentially numbered format with the prefix.
 
     The function will:
     1. Retrieve all files from the given directory.
-    2. Iterate through each file, generating a new name in the format 'wallpaper-X.extension'.
+    2. Iterate through each file, generating a new name in the format '<PREFIX>-X.extension'.
     3. Rename each file to the new name.
 
     Notes:
@@ -57,11 +57,13 @@ def main():
     path = r'D:\images\Walpapers'
     files = get_paths(path)
     count = 0
+    prefix = "wallpaper"
+    name_format = f"{prefix}-{count}"
 
     for file in files:
         extension = file.split(".")[-1]
         count += 1
-        new_name = f"wallpaper-{count}.{extension}"
+        new_name = f"{name_format}.{extension}"
         old_path = os.path.join(path, file)
         new_path = os.path.join(path, new_name)
         rename_file(old_path, new_path)

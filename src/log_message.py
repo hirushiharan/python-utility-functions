@@ -19,11 +19,6 @@ Usage:
 - Call the log function with a message and an optional log level to log messages.
 - The script will automatically handle log file creation and rotation.
 
-Example:
-    log("This is an info message")
-    log("This is a warning message", level=WARNING)
-    log("This is an error message", level=ERROR)
-
 Note:
 - Ensure the LOG_FILE path is correctly set to the desired log file location.
 - The log messages are written in JSON format to facilitate easy parsing.
