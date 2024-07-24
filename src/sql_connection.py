@@ -117,20 +117,3 @@ class DatabaseConnector:
         if self.connection and self.connection.is_connected():
             self.connection.close()
             print("MySQL connection is closed")
-
-def main():
-    """
-    Main function to execute the script logic.
-
-    This function creates an instance of DatabaseConnector, establishes a 
-    connection to the MySQL database, and then closes the connection.
-    
-    Returns:
-        None
-    """
-    db_connector = DatabaseConnector()
-    db_connector.connect_to_mysql()
-    db_connector.close_connection()
-
-if __name__ == "__main__":
-    main()

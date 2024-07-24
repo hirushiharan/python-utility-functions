@@ -89,14 +89,3 @@ class FileRenamer:
             old_path = os.path.join(self.path, file)
             new_path = os.path.join(self.path, new_name)
             self.rename_file(old_path, new_path)
-
-def main():
-    """
-    Main function to create a FileRenamer instance and rename files in the specified directory.
-    """
-    path = r'D:\images\Walpapers'
-    file_renamer = FileRenamer(path, name_format="{prefix}-{count:03d}")
-    file_renamer.rename_files()
-
-if __name__ == "__main__":
-    main()

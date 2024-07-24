@@ -22,6 +22,11 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+# Constants for log levels
+INFO = "INFO"
+WARNING = "WARNING"
+ERROR = "ERROR"
+
 class Logger:
     """
     A class to handle logging messages to the console and a log file in JSON format.
@@ -156,27 +161,3 @@ class Logger:
             self.log_levels.remove(level)
         else:
             raise KeyError(f"Log level '{level}' not found in the set of supported log levels.")
-
-# Constants for log levels
-INFO = "INFO"
-WARNING = "WARNING"
-ERROR = "ERROR"
-
-def main():
-    """
-    Main function to demonstrate the usage of the Logger class.
-    """
-    logger = Logger()
-    logger.log("This is an info message.", INFO)
-    logger.log("This is a warning message.", WARNING)
-    logger.log("This is an error message.", ERROR)
-    
-    # Add a new log level and log a message with it
-    logger.add_log_level("DEBUG")
-    logger.log("This is a debug message.", "DEBUG")
-
-    # Remove an existing log level
-    logger.remove_log_level("DEBUG")
-
-if __name__ == "__main__":
-    main()
