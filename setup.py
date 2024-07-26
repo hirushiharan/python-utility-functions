@@ -1,38 +1,36 @@
 from setuptools import setup, find_packages
-from pathlib import Path
 
-# Read the contents of your README file
-here = Path(__file__).parent
+# Read the requirements
+with open("app/requirements.txt") as f:
+    requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
-# Read the requirements from requirements.txt
-def parse_requirements(filename):
-    with open(filename) as f:
-        return [line.strip() for line in f if line.strip() and not line.startswith("#")]
+print(requirements)
+
+# Read the README
+with open("app/README.md", "r") as f:
+    long_description = f.read()
 
 setup(
-    name='utility-lib-python',
-    version='0.1.1',
-    description='A collection of utility scripts for working with files, Excel, logging, and database connections.',
-    long_description="""Welcome to the Python Utils repository! This project contains a collection of utility scripts written in Python for various purposes. Each script focuses on specific functionalities that can be reused across different projects.
-    Check GitHub for more details.""",
-    long_description_content_type='text/markdown',
-    author='Hirushiharan',
-    author_email='hirushiharant@gmail.com',
-    url='https://github.com/hirushiharan/python-utility-functions.git',
-    packages=find_packages(where='src'),
-    package_dir={'': 'src'},
-    python_requires='>=3.6',
-    install_requires=parse_requirements('requirements.txt'),
+    name="python_utils",
+    version="0.1.0",
+    description="A collection of utility scripts for working with files, Excel, logging, and database connections.",
+    package_dir={"": "app"},
+    packages=find_packages(where="app"),
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/hirushiharan/python-utility-functions.git",
+    author="Hirushiharan",
+    author_email="hirushiharant@gmail.com",
+    license="Apache 2.0",
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3.11",
+        "Operating System :: OS Independent",
     ],
+    install_requires=requirements,
+    extras_require={
+        "dev": ["pytest>=7.0", "twine>=4.0.2"],
+    },
+    python_requires=">=3.6",    
 )
