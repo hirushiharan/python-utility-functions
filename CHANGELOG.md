@@ -22,6 +22,11 @@ All notable changes to this project will be documented in this file.
 ### Security
 - List any security improvements or fixes.
 
+## [1.0.1] - 2024-07-28
+
+### Added
+- Added automation actions.
+
 ## [1.0.0] - 2024-07-28
 
 ### Added
