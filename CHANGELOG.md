@@ -22,17 +22,8 @@ All notable changes to this project will be documented in this file.
 ### Security
 - List any security improvements or fixes.
 
-## [0.1.1] - 2024-07-30
-
-### Changed
-- Updated version number and metadata for PyPI release.
-- Updated documentation and README file to reflect the latest changes.
-
-## [0.1.0] - 2024-07-24
+## [1.0.0] - 2024-07-28
 
 ### Added
-- Initial release of `utility-lib-python`.
+- Initial prod release of `py-utility-scripts`.
 - Added utility scripts for Excel file operations, file renaming, logging, and database connections.
-
-### Changed
-- Initial setup and project structure established.
