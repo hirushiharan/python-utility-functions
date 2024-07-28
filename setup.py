@@ -10,7 +10,7 @@ with open("app/README.md", "r") as f:
 
 setup(
     name="py_utility_scripts",
-    version="1.0.1",
+    version="1.0.2",
     description="A collection of utility scripts for working with files, Excel, logging, and database connections.",
     package_dir={"": "app"},
     packages=find_packages(where="app"),
