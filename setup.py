@@ -11,7 +11,7 @@ with open("app/README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name="python_utils",
+    name="py_utility_scripts",
     version="0.1.0",
     description="A collection of utility scripts for working with files, Excel, logging, and database connections.",
     package_dir={"": "app"},
@@ -32,5 +32,5 @@ setup(
     extras_require={
         "dev": ["pytest>=7.0", "twine>=4.0.2"],
     },
-    python_requires=">=3.6",    
+    python_requires=">=3.11",    
 )
