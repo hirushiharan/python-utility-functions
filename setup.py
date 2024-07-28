@@ -4,8 +4,6 @@ from setuptools import setup, find_packages
 with open("app/requirements.txt") as f:
     requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
-print(requirements)
-
 # Read the README
 with open("app/README.md", "r") as f:
     long_description = f.read()
