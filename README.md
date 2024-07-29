@@ -1,89 +1,129 @@
-## Introduction
+# Py Utility Scripts
 
-- Python packaging is the most common way to share code/libraries/applications. It allows packaging of the modules, so that they can later be published and deployed by other users, either by sharing binary files, source code or by using a package manager to fetch them from online (public or private) repositories.
-- The recommended way to package your code is by using the built-in python library _setuptools_ which has a lot and powerful functionalities.
-- In this video, I ll show you how to harness some the power of _setuptools_ so that you can package and publish your code on the official python repository _PyPI._
-- Stay with me until the end of the video, where I will present a cool and practical alternative to a common practice most developers do, but is not needed anymore when packaging your code.
+Python packaging is the most common way to share code/libraries/applications. It allows packaging of the modules so they can later be published and deployed by other users, either by sharing binary files, source code, or by using a package manager to fetch them from online (public or private) repositories.
 
-## Example use cases (where packaging is a must)
+The recommended way to package your code is by using the built-in Python library _setuptools_, which has many powerful functionalities.
+
+In this repository, I'll show you how to harness some of the power of _setuptools_ so that you can package and publish your code on the official Python repository _PyPI_.
+
+## Example Use Cases (Where Packaging is a Must)
 
 - Easier management of release versioning
-- Shipping and deployment becomes pretty simple
+- Shipping and deployment become pretty simple
 - Automatic dependency management
 - Increase your code’s accessibility
 - Cloud computing
 - Containerizing your application
 
-## Code example
+## Code Example
 
-- Brief presentation of the library itself
-  - A library that contains various ID generators ( password, guid, valid credit card number, object id and numerical pin)
-  - Unit tests are also included
-- Explain how the project is structured, folders, sub-folders because it plays important role when you install the package on the installed structure.
+This library contains various utility functions for handling Excel files, file operations, logging, and SQL connections.
 
-## Present setuptools
+### Features:
 
-- _setuptools_ is a (now standard) python library that facilitates packaging python projects by enhancing the _distutils_ library.
-- Important keywords/parameters of _setuptools_ to be aware of:
-  - wheel (.whl): A pre-built (zip) binary file, which is ready to be installed, that contains all the necessary information (code itself and metadata) for python package manager to install the package. To create one you should run `python setup.py bdist_wheel` within the shell. bdist stands for binary distribution.
-  - sdist (.tar.gz) : The source code distribution equivalent to wheel. A tar file (zip) that contains the source code together with the [setup.py](http://setup.py) file, so the user can re-built it. To create a source distribution run `python setup.py sdist`
-- The above two commands can be combined into one, if both distributions are desired. The output will be stored within the _dist_ folder that setuptools will create in the same level with [setup.py](http://setup.py) resides.
-- The build folder: Contains all the source code / modules that will be distributed.
-- egg-info: A directory placed adjacent to the project's code and resources, that directly contains the project's metadata. Replaced by wheels. (directly from Wikipedia)
-  - Python eggs are a way of bundling additional information with a Python project, that allows the project's dependencies to be checked and
-    satisfied at runtime, as well as allowing projects to provide [plugins](<https://en.wikipedia.org/wiki/Plug-in_(computing)>) for other projects. (quoting wikipedia)
+- Read specified columns from an Excel file and return data as a list of dictionaries.
+- Create and write to Excel workbooks and worksheets.
+- Rename files in a specified directory to a sequentially numbered format with a user-defined prefix and format.
+- Provide flexible logging to both console and log file in JSON format with log file rotation.
+- Handle loading environment variables and establishing a connection to a MySQL database.
 
-## Present [setup.py](http://setup.py)
+## Project Structure
 
-- Talk about the basic parameters (the ones already in our example [setup.py](http://setup.py) file), brief explanation on what each one is responsible for.
-- Explain in a nutshell how to customize the parameters it needs for [setup.py](http://setup.py) to work, mostly package dir and packages that allows setuptools to automatically find all the packages in our project structure (which is explained before in code example).
-- Mention that _\*\*init_\*\*.py needs to be present in every directory/folder in order for it to be seen as a package directory.
-- Mention that an alternative to adding the parameters in [setup.py](http://setup.py) (python file) you can screate a setup.cfg (configuration file) as well. But that’s outside the scope of this video.
+The project is structured as follows:
 
-## Building and installing a package (sdist, wheel)
+    python-utility-functions/
+      ├── .github
+      │   ├── pypi-publish.yml
+      │   └── test.pypi-publish.yml
+      ├── app/
+      │   ├── python_utils/
+      │   │   ├── src/
+      │   │   │   ├── __init__.py
+      │   │   │   ├── excel_functions.py
+      │   │   │   ├── file_functions.py
+      │   │   │   ├── log_message.py
+      │   │   │   └── sql_connection.py
+      │   │   ├── tests/
+      │   │   │   ├── __init__.py
+      │   │   │   ├── test_excel_functions.py
+      │   │   │   ├── test_file_functions.py
+      │   │   │   ├── test_log_message.py
+      │   │   │   └── test_sql_connection.py
+      │   │   └── __init__.py
+      │   ├── __init__.py
+      │   ├── README.md
+      │   └── requirements.txt
+      ├── .gitignore
+      ├── .env
+      ├── CHANGELOG.md
+      ├── LICENSE
+      ├── README.md
+      └── setup.py
 
-- Run [setup.py](http://setup.py) using ‘_python [setup.py](http://setup.py/) bdist_wheel sdist’_ command. Explain that this creates both source code files and binary (.whl) file.
-- Then install package locally by running ‘_pip install idgenerator-0.0.x-py3-none-any.whl’._ Alternatively, you can also run _pip install ._ under the directory where [setup.py](http://setup.py) lives and will install your package directly, but that doesn’t the _dist_ folder which contains all the files needed for publishing in the PyPI repository. (up to you).
-- Optionally, explain how to update _.gitignore_ to ignore _build, dist and .egg-info_ files.
-- NOTE: The current [setup.py](http://setup.py) file is configured to also install the tests within the python environment. That is not the way it should normally happen, it happens only for the purposes of this demo. We can always change that for the video if you think it should happen otherwise.
+## Building and Installing a Package (sdist, wheel)
+
+### Setuptools
+
+_setuptools_ is a (now standard) Python library that facilitates packaging Python projects by enhancing the _distutils_ library.
+
+Important keywords/parameters of _setuptools_ to be aware of:
+
+- **wheel (.whl)**: A pre-built (zip) binary file, which is ready to be installed, that contains all the necessary information (code itself and metadata) for Python package manager to install the package. To create one you should run `python setup.py bdist_wheel` within the shell. `bdist` stands for binary distribution.
+- **sdist (.tar.gz)**: The source code distribution equivalent to wheel. A tar file (zip) that contains the source code together with the `setup.py` file, so the user can re-build it. To create a source distribution run `python setup.py sdist`.
+
+The above two commands can be combined into one if both distributions are desired. The output will be stored within the _dist_ folder that _setuptools_ will create in the same level where `setup.py` resides.
+
+- **build folder**: Contains all the source code/modules that will be distributed.
+- **egg-info**: A directory placed adjacent to the project's code and resources, that directly contains the project's metadata. Replaced by wheels.
+
+### Building and Installing a Package
+
+- Run `setup.py` using `python setup.py bdist_wheel sdist` command. This creates both source code files and binary (.whl) file.
+- Then install the package locally by running `pip install .` under the directory where `setup.py` lives and will install your package directly, and can test the package locally.
 
 ## Introducing PyPI
 
-- Explain what PyPI is in a nutshell, how to browse/search packages and see the metadata about it (set up the ground for when you publish your package later).
-- Maybe a catchy point is to mention that when you _pip install anything_ you are basically fetching from PyPI (surprisingly enough some people might not know this!).
-- Make an account so that you can publish a package. I would recommend to make a testPyPI account [https://test.pypi.org/](https://test.pypi.org/) so that you don’t actually publish under the official repository.
-- Optional but good practice, explain how to configure / create _.pypirc_ file, so authentication happens automatically when uploading your package to the repository. Also good for privacy issues when making the video that your token doesn’t get compromised.
+- PyPI (Python Package Index) is a repository of software for the Python programming language. It helps you find and install software developed and shared by the Python community.
+- You can browse and search for packages on [PyPI](https://pypi.org/). Each package's page provides metadata about the package, including its version history, dependencies, and installation instructions.
+- When you run `pip install <PACKAGE_NAME>>`, you are basically fetching from PyPI.
+- To publish a package, you need to create an account on [PyPI](https://pypi.org/). It’s recommended to first create a [TestPyPI](https://test.pypi.org/) account, so that you don’t publish under the official repository while testing.
+- For convenience and security, you can configure/create a `.pypirc` file for automatic authentication when uploading your package to the repository. This also helps in keeping your token private.
 
-## Publishing the package on PyPI
+```
+  [distutils]
+  index-servers =
+      pypi
+      pypitest
 
-- Make sure you have _twine_ installed. That’s a good point to run ‘_pip install .[dev]’._ Twine is declared as a development dependency, so that will install it automatically together with the package itself.
-- Run _twine check dist/_ ,\* you should see tests passed for both source code and wheel file.
-- Run ‘_twine upload — repository testpypi dist/_’ ._ Assuming you have a _.pypirc\* file configured, that should work and publish your package to the testPyPI repo.
-- Small detail to be aware of: If you try to publish same version name as already published, testPyPI won’t allow it and you ll get an error. (see point 7 in retrospective)
+  [pypi]
+  repository = https://upload.pypi.org/legacy/
+  username = <your-pypi-username>
+  password = <your-pypi-password>
+
+  [pypitest]
+  repository = https://test.pypi.org/legacy/
+  username = <your-test-pypi-username>
+  password = <your-test-pypi-password>
+```
+
+- Alternatively you can create [GitHub actions](.github) to publish your package in [PyPI](https://pypi.org/)/[TestPyPI](https://test.pypi.org/).
+
+
+## Publishing the Package on PyPI
+
+- Make sure you have _twine_ installed. Run `pip install .[dev]`. Twine is declared as a development dependency, so that will install it automatically together with the package itself.
+- Run `twine check dist/*` , you should see tests passed for both source code and wheel file.
+- Run `twine upload --repository testpypi dist/*`. Assuming you have a `.pypirc` file configured, that should work and publish your package to the TestPyPI repo.
+- Note: If you try to publish the same version name as already published, TestPyPI won’t allow it and you’ll get an error.
 - Visit your package’s webpage so that viewers can see how the package looks published.
 - You can also create a new environment and install the newly published package via pip. You can do the same within the existing environment but always more neat to do on a fresh environment.
 
-## Further capabilities of packaging
 
-- This part is totally up to you, as in how much further you want to go. Take a look at retro to see what you think is worth mentioning more extensively here. Number 4, 11 for example might be such cases.
-- Some interesting capabilities worth discussed for sure imo within the context of this video is _‘pip install -e .’_
+## Contributing
 
-## Hook sharing
+I am packaging this code for my own use to use in a different environment. Also, other developers can use it if needed. Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
 
-- Talk about the no need of _requirements.txt_ due to the [setup.py](http://setup.py) dev option. If you did the first bullet point of Publishing the package, you can call back to it.
+## Contact
 
-## Retrospective
-
-Things to keep in mind before diving into code packaging:
-
-1. How much does it make sense when you package your code? (Is your code easily re-usable/abstracted enough and ‘plug and play’ after deployment?)
-2. Are you packaging your code for own use (for example in different environment), or to share it easier with other developers? (Documenting it, creating a helper web-page might be a good idea, or even necessary in some cases)
-3. If you re planning to share your package with others, consider using a software license before. Have a look at [https://tldrlegal.com/](https://tldrlegal.com/) or [https://choosealicense.com/](https://choosealicense.com/) for understanding the most popular software licenses available.
-4. If the application requires extra data, should those data be incorporated in the module or linked externally (depending on size)?
-5. Are the code modules decoupled enough for the end user to utilize parts of the package if needed?
-6. Is the architecture good enough for further development and do the modules/submodules semantically make sense to be named/placed the way they are?
-7. To avoid the overhead of updating the package version manually every time versioning management modules might come handy (ex. bumpversion\***\*).\*\*** Plus you are avoiding publishing clashes (PyPI) that occur under a version number already published previously.
-8. Good practice to use as many classifiers applicable, so that it helps developers find your package easier by filtering and it provides some metadata as well. Check the available classifiers here [https://pypi.org/classifiers/](https://pypi.org/classifiers/)
-9. Instead of using [setup.py](http://setup.py) file (code) you can atlernatively use setup.cfg which is a configuration file instead.
-10. Avoid using distutils package, use always setuptools, which is an enhancement of the former.
-11. Always publish your code under a license. By not using any license when packaging your code you are not allowing anyone to use your code?
+- LinkedIn: [Hirushiharan Thevendran](linkedin.com/in/hirushiharan-thevendran-a08a82152)
+- Email: [hirushiharant@gmail.com](hirushiharant@gmail.com)
