@@ -12,7 +12,7 @@ Usage:
 - Instantiate the ExcelReader class with the path to the Excel file and optional selected columns.
 - Call the read_excel method to read the file, and iterate_rows to get data as a list of dictionaries.
 - Instantiate the WriteToExcel class with the path to the Excel file.
-- Use the createWorkbook, closeWorkbook, createWorksheet, and defineRowColumn methods to write data.
+- Use the createWorkbook, closeWorkbook, createWorksheet, defineRowColumn, and write_data_to_excel methods to write data.
 """
 
 import pandas as pd
@@ -87,6 +87,7 @@ class WriteToExcel:
     closeWorkbook(workbook): Closes the opened workbook.
     createWorksheet(workbook, sheet): Creates a new worksheet in the workbook.
     defineRowColumn(rowNum, columnNum): Defines the initial row and column for writing data.
+    write_data_to_excel(file_name, data): Writes data to an Excel file with headers and rows.
     """
     
     def __init__(self, workbook) -> None:
@@ -148,3 +149,31 @@ class WriteToExcel:
         row = rowNum
         col = columnNum
         return row, col
+
+    def write_data_to_excel(self, file_name, data):
+        """
+        Writes data to an Excel file, including headers and data rows.
+
+        Parameters:
+        file_name (str): The name of the Excel file to create.
+        data (list): A list of dictionaries containing the data to write.
+
+        Returns:
+        None
+        """
+        # Create a workbook and add a worksheet
+        workbook = xlsxwriter.Workbook(file_name)
+        worksheet = workbook.add_worksheet()
+
+        # Write the column headers
+        headers = data[0].keys()
+        for col, header in enumerate(headers):
+            worksheet.write(0, col, header)
+
+        # Write the data rows
+        for row, item in enumerate(data, start=1):
+            for col, (key, value) in enumerate(item.items()):
+                worksheet.write(row, col, value)
+
+        # Close the workbook
+        workbook.close()
