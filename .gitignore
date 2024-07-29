@@ -30,3 +30,6 @@ venv.bak/
 
 # Files
 /logs
+todo.txt
+**/local_test
+**/test.py
