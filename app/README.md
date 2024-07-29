@@ -81,7 +81,7 @@ This script renames all files in a specified directory to a sequentially numbere
     count = 0
     path = r'D:\images\Walpapers'
 
-    file_renamer = FileRenamer(path, name_format="{prefix}-{count:03d}")
+    file_renamer = FileRenamer(path, prefix=prefix, name_format="{prefix}-{count:03d}")
     file_renamer.rename_files()
 
 ### [`log_message.py`](python_utils/src/log_message.py)
@@ -130,16 +130,40 @@ This script establishes a connection to a MySQL database using credentials store
 Create a .env file in the root directory of the project with the following format:
 
     # Database configuration
-    DB_HOST=your_db_host
-    DB_USER=your_db_user
-    DB_PASSWORD=your_db_password
-    DB_NAME=your_db_name
+    MYSQL_HOST=<YOUR_MYSQL_HOST>
+    MYSQL_USER=<YOUR_MYSQL_DB_USER>
+    MYSQL_PASSWORD=<YOUR_MYSQL_DB_PASSWORD>
+    MYSQL_DATABASE=<YOUR_MYSQL_DATABASE>
+    MYSQL_PORT=<YOUR_MYSQL_PORT>
 
 #### Example
 
     from python_utils import DatabaseConnector
 
-    db_connector = DatabaseConnector()
-    db_connector.connect_to_mysql()
-    db_connector.close_connection()
+    from dotenv import load_dotenv
+    import os
+
+    load_dotenv()
+
+    MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
+    MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
+    MYSQL_USER = os.getenv("MYSQL_USER")
+    MYSQL_HOST = os.getenv("MYSQL_HOST")
+    MYSQL_PORT = int(os.getenv("MYSQL_PORT"))
+
+    # Initialize the DatabaseConnector with appropriate parameters
+    db_connector = DatabaseConnector(
+        host=MYSQL_HOST,
+        port=MYSQL_PORT,
+        user=MYSQL_USER,
+        password=MYSQL_PASSWORD,
+        database=MYSQL_DATABASE
+    )
+
+    try:
+        # Attempt to connect to MySQL
+        db_connector.connect_to_mysql()
+    finally:
+        # Ensure the connection is closed
+        db_connector.close_connection()
             
