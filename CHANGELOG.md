@@ -22,6 +22,11 @@ All notable changes to this project will be documented in this file.
 ### Security
 - List any security improvements or fixes.
 
+## [1.1.0] - 2024-07-29
+
+### Added
+- Script to generate project structure and save it to .md file.
+
 ## [1.0.2] - 2024-07-28
 
 ### Fixed
