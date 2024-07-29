@@ -10,6 +10,7 @@ dist/
 *.pyc
 *.pyd
 *.pyo
+*.pypirc
 
 # Installer logs
 pip-log.txt
