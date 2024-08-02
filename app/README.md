@@ -33,31 +33,30 @@ This script provides functionalities for reading from and writing to Excel files
     from python_utils import ExcelReader, WriteToExcel
 
     # Write Score data to example.xlsx Excel file
-
-    excel = WriteToExcel("example.xlsx")
-    file = excel.createWorkbook()
-    sheet = excel.createWorksheet(file, "my_sheet")
-    row, col = excel.defineRowColumn(0, 0)
-
+    
+    file_path = "example.xlsx"
+    
+    # Define headers and data
+    headers = ['name','age', 'score']
     scores = [
-        ['ankit', 1000],
-        ['rahul', 100],
-        ['priya', 300],
-        ['harshita', 50],
+        ['ankit',12, 1000],
+        ['rahul',13, 100],
+        ['priya',12, 300],
+        ['harshita',12, 50],
     ]
 
-    for name, score in scores:
-        sheet.write(row, col, name)
-        sheet.write(row, col + 1, score)
-        row += 1
+    # Create an instance of WriteToExcel
+    excel = WriteToExcel(file_path)
 
-    excel.closeWorkbook(file)
+    # Write data to the Excel file
+    excel.write_data_to_excel(file_path, "sheet_1", 0, 0, headers, scores)
+    
 
     # Read Score data from example.xlsx Excel file
 
-    excel_reader_6_columns = ExcelReader('example.xlsx', selected_columns=['name', 'score'])
-    excel_reader_6_columns.read_excel()
-    values = excel_reader_6_columns.iterate_rows()
+    excel_columns = ExcelReader('example.xlsx', selected_columns=['name', 'score'])
+    excel_columns.read_excel()
+    values = excel_columns.iterate_rows()
 
     for row_data in values:
         print(row_data)
@@ -126,7 +125,7 @@ This script provides a project structure generatoe mechanism to print the given 
 
 #### Example
 
-    from python_utils import DatabaseConnector
+    from python_utils import ProjectStructure
     import os
 
     root_path = r'D:\repos\python-utility-functions'
