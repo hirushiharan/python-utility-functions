@@ -5,6 +5,3 @@ pandas
 
 ### Environment Variables
 python-dotenv
-
-### SQL
-mysql-connector-python
