@@ -90,14 +90,15 @@ class WriteToExcel:
     write_data_to_excel(file_name, data): Writes data to an Excel file with headers and rows.
     """
     
-    def __init__(self, workbook) -> None:
+    def __init__(self, file_name) -> None:
         """
         Initializes the WriteToExcel with the file path.
 
         Parameters:
         workbook (str): Path to the Excel file.
         """
-        self.workbook = workbook
+        self.file_name = file_name
+        self.workbook = None
 
     def createWorkbook(self):
         """
@@ -106,10 +107,10 @@ class WriteToExcel:
         Returns:
         xlsxwriter.Workbook: The created workbook object.
         """
-        file = xlsxwriter.Workbook(self.workbook)
-        return file
+        self.workbook = xlsxwriter.Workbook(self.file_name)
+        return self.workbook
     
-    def closeWorkbook(self, workbook):
+    def closeWorkbook(self):
         """
         Closes the opened workbook.
 
@@ -119,9 +120,10 @@ class WriteToExcel:
         Returns:
             None
         """
-        workbook.close()
+        if self.workbook:
+            self.workbook.close()
 
-    def createWorksheet(self, workbook, sheet):
+    def createWorksheet(self, sheet_name):
         """
         Creates a new worksheet in the workbook.
 
@@ -132,25 +134,12 @@ class WriteToExcel:
         Returns:
         xlsxwriter.Workbook.worksheet: The created worksheet object.
         """
-        worksheet = workbook.add_worksheet(sheet)
+        if not self.workbook:
+            raise ValueError("Workbook must be created before adding a worksheet.")
+        worksheet = self.workbook.add_worksheet(sheet_name)
         return worksheet
-    
-    def defineRowColumn(self, rowNum, columnNum):
-        """
-        Defines the initial row and column for writing data.
 
-        Parameters:
-        rowNum (int): Initial row number.
-        columnNum (int): Initial column number.
-
-        Returns:
-        tuple: A tuple containing the initial row and column.
-        """
-        row = rowNum
-        col = columnNum
-        return row, col
-
-    def write_data_to_excel(self, file_name, data):
+    def write_data_to_excel(self, file_name, sheet_name, row, col, headers, data):
         """
         Writes data to an Excel file, including headers and data rows.
 
@@ -162,18 +151,17 @@ class WriteToExcel:
         None
         """
         # Create a workbook and add a worksheet
-        workbook = xlsxwriter.Workbook(file_name)
-        worksheet = workbook.add_worksheet()
+        self.createWorkbook()
+        worksheet = self.createWorksheet(sheet_name)
 
         # Write the column headers
-        headers = data[0].keys()
-        for col, header in enumerate(headers):
-            worksheet.write(0, col, header)
+        for col_num, header in enumerate(headers):
+            worksheet.write(0, col_num, header)
 
         # Write the data rows
-        for row, item in enumerate(data, start=1):
-            for col, (key, value) in enumerate(item.items()):
-                worksheet.write(row, col, value)
+        for row_num, row_data in enumerate(data, start=1):
+            for col_num, cell_data in enumerate(row_data):
+                worksheet.write(row_num, col_num, cell_data)
 
         # Close the workbook
-        workbook.close()
+        self.closeWorkbook()
