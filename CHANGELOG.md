@@ -22,10 +22,13 @@ All notable changes to this project will be documented in this file.
 ### Security
 - List any security improvements or fixes.
 
-## [1.1.0] - 2024-07-29
+## [1.1.0] - 2024-08-02
 
 ### Added
 - Script to generate project structure and save it to .md file.
+
+### Removed
+- MySQL database connection function have been removed.
 
 ## [1.0.2] - 2024-07-28
 
