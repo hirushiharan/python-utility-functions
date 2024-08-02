@@ -2,6 +2,8 @@
 
 Welcome to the Python Utils repository! This project contains a collection of utility scripts written in Python for various purposes. Each script focuses on specific functionalities that can be reused across different projects. Below is a detailed description of the project's structure and its components.
 
+Refer [`CHANGLOG.md`](../../CHANGELOG.md) for the release updates.
+
 ## Project Structure
 
 The project structure is as follows:
@@ -15,12 +17,12 @@ The project structure is as follows:
     │   ├── excel_functions.py
     │   ├── file_functions.py
     │   ├── log_message.py
-    │   └── sql_connection.py
+    │   └── project_structure_generator.py
     ├── tests/
     │   ├── test_excel_functions.py
     │   ├── test_file_functions.py
     │   ├── test_log_message.py
-    │   └── test_sql_connection.py
+    │   └── test_project_structure_generator.py
     ├── requirements.txt
     ├── README.md
     └── LICENSE 
@@ -59,15 +61,15 @@ This script provides a flexible logging mechanism that supports logging messages
 #### Usage:
 - Create an instance of `Logger` and use `log()` to log messages. Use `add_log_level()` and `remove_log_level()` to manage log levels.
 
-### [`src/sql_connection.py`](src/sql_connection.py)
+### [`src/project_structure_generator.py`](src/project_structure_generator.py)
 
-This script establishes a connection to a MySQL database using credentials stored in environment variables. It uses the `mysql.connector` library for database operations.
+This script provides a project structure generatoe mechanism to print the given path directory structure.
 
 #### Class:
-- **DatabaseConnector**: Handles loading environment variables, establishing a connection to the MySQL database, and managing the connection.
+- **ProjectStructure**: Handles generating project structure for a given directory.
 
 #### Usage:
-- Ensure the `.env` file is properly configured. Create an instance of `DatabaseConnector`, call `connect_to_mysql()` to connect to the database, and `close_connection()` to close it.
+- Create an instance of `ProjectStructure` and use `generate()` to generate the project structure of a given directory.
 
 ## Requirements
 
@@ -75,9 +77,7 @@ Make sure to install the required packages listed in `requirements.txt`:
 
 - pandas
 - xlsxwriter
-- mysql-connector-python
 - python-dotenv
-
 
 ## Installation
 
@@ -92,22 +92,11 @@ Make sure to install the required packages listed in `requirements.txt`:
 3. Install the dependencies:
     ```bash
     pip install -r requirements.txt
-    ```
-
-## Configuration
-
-Create a .env file in the root directory of the project with the following format:
-
-    # Database configuration
-    DB_HOST=your_db_host
-    DB_USER=your_db_user
-    DB_PASSWORD=your_db_password
-    DB_NAME=your_db_name
-    
+    ```    
 
 ## Python Library
 
-This project is available as a Python library on PyPI. You can find it [utility-lib-python](https://pypi.org/project/utility-lib-python/0.1.1/).
+This project is available as a Python library on PyPI. You can find it [utility-lib-python](https://pypi.org/project/utility-lib-python).
 
 ## Contributing
 
