@@ -6,7 +6,6 @@ Welcome to the Python Utils repository! This project contains a collection of ut
     
 - pandas
 - xlsxwriter
-- mysql-connector-python
 - python-dotenv
 
 ## Requirements
@@ -115,55 +114,24 @@ This script provides a flexible logging mechanism that supports logging messages
     # Remove an existing log level
     logger.remove_log_level("DEBUG")
 
-### [`sql_connection.py`](python_utils/src/sql_connection.py)
+### [`src/project_structure_generator.py`](src/project_structure_generator.py)
 
-This script establishes a connection to a MySQL database using credentials stored in environment variables. It uses the `mysql.connector` library for database operations.
+This script provides a project structure generatoe mechanism to print the given path directory structure.
 
 #### Class:
-- **DatabaseConnector**: Handles loading environment variables, establishing a connection to the MySQL database, and managing the connection.
+- **ProjectStructure**: Handles generating project structure for a given directory.
 
 #### Usage:
-- Ensure the `.env` file is properly configured. Create an instance of `DatabaseConnector`, call `connect_to_mysql()` to connect to the database, and `close_connection()` to close it.
-
-#### Configuration
-
-Create a .env file in the root directory of the project with the following format:
-
-    # Database configuration
-    MYSQL_HOST=<YOUR_MYSQL_HOST>
-    MYSQL_USER=<YOUR_MYSQL_DB_USER>
-    MYSQL_PASSWORD=<YOUR_MYSQL_DB_PASSWORD>
-    MYSQL_DATABASE=<YOUR_MYSQL_DATABASE>
-    MYSQL_PORT=<YOUR_MYSQL_PORT>
+- Create an instance of `ProjectStructure` and use `generate()` to generate the project structure of a given directory.
 
 #### Example
 
     from python_utils import DatabaseConnector
-
-    from dotenv import load_dotenv
     import os
 
-    load_dotenv()
+    root_path = r'D:\repos\python-utility-functions'
+    gitignore_file = os.path.join(root_path, '.gitignore')
 
-    MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
-    MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
-    MYSQL_USER = os.getenv("MYSQL_USER")
-    MYSQL_HOST = os.getenv("MYSQL_HOST")
-    MYSQL_PORT = int(os.getenv("MYSQL_PORT"))
-
-    # Initialize the DatabaseConnector with appropriate parameters
-    db_connector = DatabaseConnector(
-        host=MYSQL_HOST,
-        port=MYSQL_PORT,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD,
-        database=MYSQL_DATABASE
-    )
-
-    try:
-        # Attempt to connect to MySQL
-        db_connector.connect_to_mysql()
-    finally:
-        # Ensure the connection is closed
-        db_connector.close_connection()
+    project_structure = ProjectStructure(root_path, gitignore_file)
+    project_structure.generate()
             
