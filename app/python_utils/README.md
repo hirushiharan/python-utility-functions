@@ -96,7 +96,7 @@ Make sure to install the required packages listed in `requirements.txt`:
 
 ## Python Library
 
-This project is available as a Python library on PyPI. You can find it [utility-lib-python](https://pypi.org/project/utility-lib-python).
+This project is available as a Python library on PyPI. You can find it [utility-lib-python](https://pypi.org/project/py-utility-scripts/).
 
 ## Contributing
 
