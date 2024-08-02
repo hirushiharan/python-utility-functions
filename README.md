@@ -25,7 +25,7 @@ This library contains various utility functions for handling Excel files, file o
 - Create and write to Excel workbooks and worksheets.
 - Rename files in a specified directory to a sequentially numbered format with a user-defined prefix and format.
 - Provide flexible logging to both console and log file in JSON format with log file rotation.
-- Handle loading environment variables and establishing a connection to a MySQL database.
+- Generate structure of the given directory same as below provided Project Structure format.
 
 ## Project Structure
 
@@ -42,13 +42,13 @@ The project is structured as follows:
       │   │   │   ├── excel_functions.py
       │   │   │   ├── file_functions.py
       │   │   │   ├── log_message.py
-      │   │   │   └── sql_connection.py
+      │   │   │   └── project_structure_generator.py
       │   │   ├── tests/
       │   │   │   ├── __init__.py
       │   │   │   ├── test_excel_functions.py
       │   │   │   ├── test_file_functions.py
       │   │   │   ├── test_log_message.py
-      │   │   │   └── test_sql_connection.py
+      │   │   │   └── test_project_structure_generator.py
       │   │   └── __init__.py
       │   ├── __init__.py
       │   ├── README.md
