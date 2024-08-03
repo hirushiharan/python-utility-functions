@@ -27,7 +27,7 @@ class TestExcelFunctions(unittest.TestCase):
 
         for row_data in values:
             print(row_data)
-            # You can add assertions here to validate the output
+        pass
 
 if __name__ == '__main__':
     unittest.main()
