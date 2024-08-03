@@ -5,3 +5,8 @@ pandas
 
 ### Environment Variables
 python-dotenv
+
+### MySQL
+fastapi
+pydantic-settings
+mysql-connector-python
