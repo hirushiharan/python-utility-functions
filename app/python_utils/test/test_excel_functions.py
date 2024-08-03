@@ -1,36 +1,33 @@
 import unittest
-from src.excel_functions import ExcelReader, WriteToExcel
+from app.python_utils.src.excel_functions import ExcelReader, WriteToExcel
 
 class TestExcelFunctions(unittest.TestCase):
-    def test_excel_reader(self):
-        excel_reader_6_columns = ExcelReader('./assets/sample-debt-upload-data.xlsx', selected_columns=['city', 'state'])
-        excel_reader_6_columns.read_excel()
-        values = excel_reader_6_columns.iterate_rows()
+    def test_write_and_read_excel(self):
+        file_path = "app/python_utils/src/local_test/example.xlsx"
+        
+        # Define headers and data
+        headers = ['name', 'age', 'score']
+        scores = [
+            ['ankit', 12, 1000],
+            ['rahul', 13, 100],
+            ['priya', 12, 300],
+            ['harshita', 12, 50],
+        ]
+
+        # Create an instance of WriteToExcel
+        excel = WriteToExcel(file_path)
+
+        # Write data to the Excel file
+        excel.write_data_to_excel(file_path, "sheet_1", 0, 0, headers, scores)
+
+        # Read Score data from example.xlsx Excel file
+        excel_columns = ExcelReader(file_path, selected_columns=['name', 'score'])
+        excel_columns.read_excel()
+        values = list(excel_columns.iterate_rows())
 
         for row_data in values:
             print(row_data)
-        pass
-
-    def test_write_to_excel(self):
-        excel = WriteToExcel("example.xlsx")
-        file = excel.createWorkbook()
-        sheet = excel.createWorksheet(file, "my_sheet")
-        row, col = excel.defineRowColumn(0, 0)
-
-        scores = [
-            ['ankit', 1000],
-            ['rahul', 100],
-            ['priya', 300],
-            ['harshita', 50],
-        ]
-
-        for name, score in scores:
-            sheet.write(row, col, name)
-            sheet.write(row, col + 1, score)
-            row += 1
-
-        excel.closeWorkbook(file)
-        pass
+            # You can add assertions here to validate the output
 
 if __name__ == '__main__':
     unittest.main()

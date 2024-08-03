@@ -1,5 +1,5 @@
 import unittest
-from src.log_message import Logger
+from app.python_utils.src.log_message import Logger
 
 # Constants for log levels
 INFO = "INFO"

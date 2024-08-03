@@ -1,10 +1,13 @@
 import unittest
-from src.file_functions import FileRenamer
+from app.python_utils.src.file_functions import FileRenamer
 
 class TestFileFunctions(unittest.TestCase):
     def test_excel_reader(self):
-        path = r'D:\images\Walpapers'
-        file_renamer = FileRenamer(path, name_format="{prefix}-{count:03d}")
+        prefix = 'desktop-wallpaper'
+        count = 0
+        path = r'D:\repos\python-utility-functions\app\python_utils\src\local_test\Walpapers'
+
+        file_renamer = FileRenamer(path, prefix=prefix, name_format="{prefix}-{count:03d}")
         file_renamer.rename_files()
         pass
 
