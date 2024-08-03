@@ -123,10 +123,6 @@ class Settings(BaseSettings):
         env_file = ".env"  # Specify the environment file to load settings
 
 
-# Initialize settings from environment variables
-settings = Settings()
-
-
 class SqlConnection:
     """
     Manages MySQL database connections using a connection pool.
@@ -173,6 +169,9 @@ class SqlConnection:
         Raises:
             HTTPException: If the connection pool cannot be created after retries.
         """
+        # Initialize settings from environment variables
+        settings = Settings()
+
         for attempt in range(self.retries):
             try:
                 logger.log("Creating connection pool...", INFO)
@@ -342,20 +341,22 @@ class SqlExecution:
             connection.commit()
             cursor.close()
             connection.close()
-            return SqlResponse(
+            sql_response = SqlResponse(
                 success=True,
                 result=result,
                 status_code=status.HTTP_200_OK,
                 response=JSONResponse(content={"result": result}),
             )
+            return sql_response.format_response()
         except Error as e:
-            return SqlResponse(
+            sql_response = SqlResponse(
                 success=False,
                 result={},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 response=JSONResponse(content={"message": str(e)}),
                 error=str(e)
             )
+            return sql_response.format_response()
 
     @staticmethod
     def execute_transaction(queries: Dict[str, str], params: Optional[Dict[str, Any]] = None) -> SqlResponse:
@@ -377,20 +378,22 @@ class SqlExecution:
             connection.commit()
             cursor.close()
             connection.close()
-            return SqlResponse(
+            sql_response = SqlResponse(
                 success=True,
                 result={"message": "Transaction successful"},
                 status_code=status.HTTP_200_OK,
                 response=JSONResponse(content={"message": "Transaction successful"}),
             )
+            return sql_response.format_response()
         except Error as e:
-            return SqlResponse(
+            sql_response = SqlResponse(
                 success=False,
                 result={},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 response=JSONResponse(content={"message": str(e)}),
                 error=str(e)
             )
+            return sql_response.format_response()
 
 class SqlHandler:
     """
