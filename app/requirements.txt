@@ -7,6 +7,8 @@ pandas
 python-dotenv
 
 ### MySQL
-fastapi
 pydantic-settings
 mysql-connector-python
+
+### API
+fastapi
