@@ -402,8 +402,8 @@ class SqlHandler:
     Methods:
         execute_with_handling(func, *args, **kwargs): Execute an asynchronous function with error handling.
     """
-
-    async def execute_with_handling(self, func: Callable[..., Any], *args, **kwargs) -> JSONResponse:
+    @staticmethod
+    async def execute_with_handling(func: Callable[..., Any], *args, **kwargs) -> JSONResponse:
         """
         Executes an asynchronous function with standard exception handling, formatting responses for both success and error scenarios.
 
