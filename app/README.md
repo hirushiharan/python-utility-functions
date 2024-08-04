@@ -133,7 +133,7 @@ This script provides functionalities for establishing a connection to a MySQL da
 - **SqlConnection**: Provides a robust mechanism for managing database connections, including retry logic and connection pooling.
 - **SqlResponse**: Standardizes the response format for SQL operations, ensuring consistent handling of success and error cases.
 - **SqlExecution**: Encapsulates the logic for executing SQL queries and managing transactions, which simplifies database interactions.
-- **execute_with_handling**: Handles asynchronous function execution with standard exception handling. Ensures consistent error handling and response formatting for asynchronous operations, enhancing the reliability of the application.
+- **SqlHandler**: Handles asynchronous function execution with standard exception handling. Ensures consistent error handling and response formatting for asynchronous operations, enhancing the reliability of the application.
 
 #### Usage:
 - The module can be used in a FastAPI application to manage MySQL database connections and execute SQL queries with robust error handling. The middleware and utility functions provided streamline logging and response formatting, making the application more maintainable and easier to debug.
