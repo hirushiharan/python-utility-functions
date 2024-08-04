@@ -4,9 +4,19 @@ Welcome to the Python Utils repository! This project contains a collection of ut
 
 ### Dependancies: 
     
-- pandas
-- xlsxwriter
-- python-dotenv
+- Excel Class Dependancies
+    - xlsxwriter
+    - python-dotenv
+
+- Environment Variables Dependancies
+    - python-dotenv
+
+- MySQL Dependancies
+    - pydantic-settings
+    - mysql-connector-python
+
+- API Dependancies
+    - fastapi
 
 ## Requirements
 
@@ -113,24 +123,69 @@ This script provides a flexible logging mechanism that supports logging messages
     # Remove an existing log level
     logger.remove_log_level("DEBUG")
 
-### [`src/project_structure_generator.py`](src/project_structure_generator.py)
+### [`src/project_structure_gen.py`](src/project_structure_gen.py)
 
-This script provides a project structure generatoe mechanism to print the given path directory structure.
+This script provides functionalities for establishing a connection to a MySQL database, executing SQL queries, and managing the database connection. It uses the mysql-connector-python library and supports environment variable management using the python-dotenv library.
 
 #### Class:
-- **ProjectStructure**: Handles generating project structure for a given directory.
+- **LoggingMiddleware**: Middleware for logging HTTP request and response details. This class logs details about incoming HTTP requests and outgoing responses, which is helpful for monitoring and debugging purposes.
+- **Settings**: A configuration class for loading environment variables for MySQL database configuration. Uses Pydantic's BaseSettings to load configuration details from environment variables, ensuring secure and configurable database connections.
+- **SqlConnection**: Provides a robust mechanism for managing database connections, including retry logic and connection pooling.
+- **SqlResponse**: Standardizes the response format for SQL operations, ensuring consistent handling of success and error cases.
+- **SqlExecution**: Encapsulates the logic for executing SQL queries and managing transactions, which simplifies database interactions.
+- **execute_with_handling**: Handles asynchronous function execution with standard exception handling. Ensures consistent error handling and response formatting for asynchronous operations, enhancing the reliability of the application.
 
 #### Usage:
-- Create an instance of `ProjectStructure` and use `generate()` to generate the project structure of a given directory.
+- The module can be used in a FastAPI application to manage MySQL database connections and execute SQL queries with robust error handling. The middleware and utility functions provided streamline logging and response formatting, making the application more maintainable and easier to debug.
 
 #### Example
 
-    from python_utils import ProjectStructure
-    import os
+    from python_utils import LoggingMiddleware, SqlConnection, SqlExecution, SqlHandler, Logger
+    from fastapi import HTTPException, status, Query
+    from fastapi import FastAPI, Depends
+    from fastapi.responses import JSONResponse
+    import uvicorn
 
-    root_path = r'D:\repos\python-utility-functions'
-    gitignore_file = os.path.join(root_path, '.gitignore')
+    # Constants for log levels
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
 
-    project_structure = ProjectStructure(root_path, gitignore_file)
-    project_structure.generate()
+    logger = Logger()
+
+    def fetch_user_by_email(email: str, db_conn) -> dict:
+        try:
+            query = "SELECT * FROM user WHERE email = %s"
+            result = SqlExecution.execute_single_query(db_conn, query, (email,))
+            if not result:
+                raise HTTPException(status_code=404, detail="User not found")
+            logger.log(f"Fetched data for '{email}' from user table", INFO)
+            return result
+        except Exception as e:
+            logger.log(f"Error fetching user by email '{email}': {str(e)}", ERROR)
+            raise HTTPException(status_code=500, detail="Error fetching user")
+
+    # Initialize FastAPI app
+    app = FastAPI()
+    app.add_middleware(LoggingMiddleware)
+
+    # Fetch User
+    async def get_user_handler(email: str, db_conn) -> JSONResponse:
+        data = fetch_user_by_email(email, db_conn)
+        return JSONResponse(content=data, status_code=status.HTTP_200_OK)
+
+    @app.get("/user", response_description="Retrieve user data by email")
+    async def get_user(email: str = Query(...), db_conn=Depends(SqlConnection().get_db_connection)) -> JSONResponse:
+        return await SqlHandler.execute_with_handling(get_user_handler, email, db_conn)
+
+    def main():
+        try:
+            # Run the Uvicorn server
+            uvicorn.run('main:app', host='0.0.0.0', port=8000)
+        except Exception as e:
+            logger.log(f"Error running the application: {e}", level=ERROR)
+            raise
+
+    if __name__ == '__main__':
+        main()
             

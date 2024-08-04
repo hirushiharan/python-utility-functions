@@ -1,35 +1,36 @@
 # Py Utility Scripts
 
-Python packaging is the most common way to share code/libraries/applications. It allows packaging of the modules so they can later be published and deployed by other users, either by sharing binary files, source code, or by using a package manager to fetch them from online (public or private) repositories.
+Python packaging is an essential method for sharing code, libraries, and applications. It facilitates the packaging of modules, enabling them to be published and deployed by other users, whether through binary files, source code, or package managers that fetch them from online repositories, both public and private.
 
-The recommended way to package your code is by using the built-in Python library _setuptools_, which has many powerful functionalities.
+In this repository, I demonstrate how to leverage the power of **setuptools**, a built-in Python library with robust functionalities for packaging and publishing code on the official Python repository, PyPI.
 
-In this repository, I'll show you how to harness some of the power of _setuptools_ so that you can package and publish your code on the official Python repository _PyPI_.
+## Example Use Cases
 
-## Example Use Cases (Where Packaging is a Must)
+Packaging your code offers several benefits, including:
 
 - Easier management of release versioning
-- Shipping and deployment become pretty simple
+- Simplified shipping and deployment
 - Automatic dependency management
-- Increase your code’s accessibility
-- Cloud computing
-- Containerizing your application
+- Increased code accessibility
+- Support for cloud computing
+- Facilitation of containerizing your application
 
 ## Code Example
 
 This library contains various utility functions for handling Excel files, file operations, logging, and SQL connections.
 
-### Features:
+### Features
 
-- Read specified columns from an Excel file and return data as a list of dictionaries.
-- Create and write to Excel workbooks and worksheets.
-- Rename files in a specified directory to a sequentially numbered format with a user-defined prefix and format.
-- Provide flexible logging to both console and log file in JSON format with log file rotation.
-- Generate structure of the given directory same as below provided Project Structure format.
+- Create and write to Excel workbooks and worksheets
+- Read specified columns from an Excel file and return data as a list of dictionaries
+- Rename files in a specified directory to a sequentially numbered format with a user-defined prefix and format
+- Provide flexible logging to both console and log file in JSON format with log file rotation
+- Generate the structure of a given directory, following the provided Project Structure format
+- MySQL functions for connecting to databases, logging middleware, executing queries, handling execution, and formatting responses
 
 ## Project Structure
 
-The project is structured as follows:
+The project is organized as follows:
 
     python-utility-functions/
       ├── .github
@@ -42,13 +43,15 @@ The project is structured as follows:
       │   │   │   ├── excel_functions.py
       │   │   │   ├── file_functions.py
       │   │   │   ├── log_message.py
-      │   │   │   └── project_structure_generator.py
+      │   │   │   ├── project_structure_generator.py
+      │   │   │   └── sql_functions.py
       │   │   ├── tests/
       │   │   │   ├── __init__.py
       │   │   │   ├── test_excel_functions.py
       │   │   │   ├── test_file_functions.py
       │   │   │   ├── test_log_message.py
-      │   │   │   └── test_project_structure_generator.py
+      │   │   │   ├── test_project_structure_generator.py
+      │   │   │   └── test_sql_functions.py
       │   │   └── __init__.py
       │   ├── __init__.py
       │   ├── README.md
@@ -64,64 +67,66 @@ The project is structured as follows:
 
 ### Setuptools
 
-_setuptools_ is a (now standard) Python library that facilitates packaging Python projects by enhancing the _distutils_ library.
+**setuptools** is a standard Python library that enhances the **distutils** library, making it easier to package Python projects.
 
-Important keywords/parameters of _setuptools_ to be aware of:
+Key concepts in **setuptools**:
 
-- **wheel (.whl)**: A pre-built (zip) binary file, which is ready to be installed, that contains all the necessary information (code itself and metadata) for Python package manager to install the package. To create one you should run `python setup.py bdist_wheel` within the shell. `bdist` stands for binary distribution.
-- **sdist (.tar.gz)**: The source code distribution equivalent to wheel. A tar file (zip) that contains the source code together with the `setup.py` file, so the user can re-build it. To create a source distribution run `python setup.py sdist`.
+- **wheel (.whl)**: A pre-built (zip) binary file containing all the necessary information (code and metadata) for Python package managers to install the package. Create one with `python setup.py bdist_wheel`. `bdist` stands for binary distribution.
+- **sdist (.tar.gz)**: The source code distribution equivalent to a wheel, containing the source code and `setup.py` file. Create a source distribution with `python setup.py sdist`.
 
-The above two commands can be combined into one if both distributions are desired. The output will be stored within the _dist_ folder that _setuptools_ will create in the same level where `setup.py` resides.
+To generate both distributions, run:
 
-- **build folder**: Contains all the source code/modules that will be distributed.
-- **egg-info**: A directory placed adjacent to the project's code and resources, that directly contains the project's metadata. Replaced by wheels.
+    python setup.py bdist_wheel sdist
+
+The output will be stored in the _dist_ folder created alongside `setup.py`.
 
 ### Building and Installing a Package
 
-- Run `setup.py` using `python setup.py bdist_wheel sdist` command. This creates both source code files and binary (.whl) file.
-- Then install the package locally by running `pip install .` under the directory where `setup.py` lives and will install your package directly, and can test the package locally.
+To build and install the package locally:
+
+1. Run `python setup.py bdist_wheel sdist` to create both the source and binary files.
+2. Install the package locally with `pip install .` under the directory containing `setup.py`.
+
 
 ## Introducing PyPI
 
-- PyPI (Python Package Index) is a repository of software for the Python programming language. It helps you find and install software developed and shared by the Python community.
-- You can browse and search for packages on [PyPI](https://pypi.org/). Each package's page provides metadata about the package, including its version history, dependencies, and installation instructions.
-- When you run `pip install <PACKAGE_NAME>>`, you are basically fetching from PyPI.
-- To publish a package, you need to create an account on [PyPI](https://pypi.org/). It’s recommended to first create a [TestPyPI](https://test.pypi.org/) account, so that you don’t publish under the official repository while testing.
-- For convenience and security, you can configure/create a `.pypirc` file for automatic authentication when uploading your package to the repository. This also helps in keeping your token private.
+[PyPI (Python Package Index)](https://pypi.org/) is a repository for Python software. It enables developers to find and install software shared by the Python community.
 
-```
-  [distutils]
-  index-servers =
-      pypi
-      pypitest
+To publish a package, create an account on [PyPI](https://pypi.org/) and, for testing purposes, [TestPyPI](https://test.pypi.org/). Configure a `.pypirc` file for automatic authentication when uploading packages.
 
-  [pypi]
-  repository = https://upload.pypi.org/legacy/
-  username = <your-pypi-username>
-  password = <your-pypi-password>
+Example `.pypirc` file:
 
-  [pypitest]
-  repository = https://test.pypi.org/legacy/
-  username = <your-test-pypi-username>
-  password = <your-test-pypi-password>
-```
+    [distutils]
+    index-servers =
+        pypi
+        pypitest
+
+    [pypi]
+    repository = https://upload.pypi.org/legacy/
+    username = <your-pypi-username>
+    password = <your-pypi-password>
+
+    [pypitest]
+    repository = https://test.pypi.org/legacy/
+    username = <your-test-pypi-username>
+    password = <your-test-pypi-password>
+
 
 - Alternatively you can create [GitHub actions](.github) to publish your package in [PyPI](https://pypi.org/)/[TestPyPI](https://test.pypi.org/).
 
 
 ## Publishing the Package on PyPI
 
-- Make sure you have _twine_ installed. Run `pip install .[dev]`. Twine is declared as a development dependency, so that will install it automatically together with the package itself.
-- Run `twine check dist/*` , you should see tests passed for both source code and wheel file.
-- Run `twine upload --repository testpypi dist/*`. Assuming you have a `.pypirc` file configured, that should work and publish your package to the TestPyPI repo.
-- Note: If you try to publish the same version name as already published, TestPyPI won’t allow it and you’ll get an error.
-- Visit your package’s webpage so that viewers can see how the package looks published.
-- You can also create a new environment and install the newly published package via pip. You can do the same within the existing environment but always more neat to do on a fresh environment.
+- Ensure twine is installed. Run `pip install .[dev]`. (Twine is declared as a development dependency, so that will install it automatically together with the package itself.)
+- Check the package with `twine check dist/*` , to ensure both the source and wheel files pass.
+- Upload to TestPyPI with `twine upload --repository testpypi dist/*`. Ensure a `.pypirc` file is configured. (If you try to publish the same version name as already published, TestPyPI won’t allow it and you’ll get an error.)
+- Visit your package’s TestPyPI webpage to verify the upload.
 
+To test the package, create a new environment and install it using pip.
 
 ## Contributing
 
-I am packaging this code for my own use to use in a different environment. Also, other developers can use it if needed. Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
+This code is packaged for personal use and to assist other developers. Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
 
 ## Contact
 

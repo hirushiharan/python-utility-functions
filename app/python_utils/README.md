@@ -4,29 +4,6 @@ Welcome to the Python Utils repository! This project contains a collection of ut
 
 Refer [`CHANGLOG.md`](../../CHANGELOG.md) for the release updates.
 
-## Project Structure
-
-The project structure is as follows:
-
-    python-utility-functions/
-    │
-    ├── .gitignore
-    ├── .env
-    ├── src/
-    │   ├── __init__.py
-    │   ├── excel_functions.py
-    │   ├── file_functions.py
-    │   ├── log_message.py
-    │   └── project_structure_generator.py
-    ├── tests/
-    │   ├── test_excel_functions.py
-    │   ├── test_file_functions.py
-    │   ├── test_log_message.py
-    │   └── test_project_structure_generator.py
-    ├── requirements.txt
-    ├── README.md
-    └── LICENSE 
-
 ## Components
 
 ### [`src/excel_functions.py`](src/excel_functions.py)
@@ -61,7 +38,7 @@ This script provides a flexible logging mechanism that supports logging messages
 #### Usage:
 - Create an instance of `Logger` and use `log()` to log messages. Use `add_log_level()` and `remove_log_level()` to manage log levels.
 
-### [`src/project_structure_generator.py`](src/project_structure_generator.py)
+### [`src/project_structure_gen.py`](src/project_structure_gen.py)
 
 This script provides a project structure generatoe mechanism to print the given path directory structure.
 
@@ -71,13 +48,49 @@ This script provides a project structure generatoe mechanism to print the given 
 #### Usage:
 - Create an instance of `ProjectStructure` and use `generate()` to generate the project structure of a given directory.
 
+### [`src/sql_connection.py`](src/sql_connection.py)
+
+This script handles the loading of environment variables and the establishment of connections to a MySQL database. It includes methods for managing the database connection and executing SQL queries.
+
+#### Classes:
+- **LoggingMiddleware**: A middleware class for logging HTTP request and response details. This class logs information about incoming HTTP requests and outgoing responses, which is valuable for monitoring and debugging purposes.
+- **Settings**: A configuration class for loading environment variables required for MySQL database configuration. It utilizes Pydantic's `BaseSettings` to load configuration details from environment variables, ensuring secure and configurable database connections.
+- **SqlConnection**: Provides a robust mechanism for managing database connections, including retry logic and connection pooling.
+- **SqlResponse**: Standardizes the response format for SQL operations, ensuring consistent handling of success and error cases.
+- **SqlExecution**: Encapsulates the logic for executing SQL queries and managing transactions, simplifying database interactions.
+- **SqlHandler**: Manages asynchronous function execution with standardized exception handling. It ensures consistent error handling and response formatting for asynchronous operations, enhancing the application's reliability.
+
+#### Usage:
+- This module can be used in a FastAPI application to manage MySQL database connections and execute SQL queries with robust error handling. The middleware and utility functions provided streamline logging and response formatting, making the application more maintainable and easier to debug.
+- Create a `.env` file to store MySQL credentials. Below is an example `.env` file:
+
+        MYSQL_PASSWORD='<SQL_PASSWORD>'
+        MYSQL_DATABASE='<SQL_DATABASE>'
+        MYSQL_USER='<SQL_USER>'
+        MYSQL_HOST='<SQL_HOST>'
+        MYSQL_PORT='<SQL_PORT>'
+
+- Instantiate `LoggingMiddleware` to log details about incoming HTTP requests and outgoing responses, which aids in monitoring and debugging.
+- Instantiate `SqlConnection`, `SqlResponse`, `SqlExecution`, and `SqlHandler` to integrate with FastAPI APIs.
+ 
+
 ## Requirements
 
 Make sure to install the required packages listed in `requirements.txt`:
 
-- pandas
-- xlsxwriter
-- python-dotenv
+- Excel Class Dependancies
+    - xlsxwriter
+    - python-dotenv
+
+- Environment Variables Dependancies
+    - python-dotenv
+
+- MySQL Dependancies
+    - pydantic-settings
+    - mysql-connector-python
+
+- API Dependancies
+    - fastapi
 
 ## Installation
 
@@ -100,7 +113,7 @@ This project is available as a Python library on PyPI. You can find it [utility-
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request if you have suggestions or improvements.
+This code is packaged for personal use and to assist other developers. Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
 
 ## Authors
 
@@ -111,5 +124,3 @@ Contributions are welcome! Please open an issue or submit a pull request if you 
 ## License
 
 This project is licensed under the Apache License. - see the [LICENSE](LICENSE) file for details.
-
-Feel free to adjust any sections as needed!
