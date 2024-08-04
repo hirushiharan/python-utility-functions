@@ -22,6 +22,15 @@ All notable changes to this project will be documented in this file.
 ### Security
 - List any security improvements or fixes.
 
+## [1.4.0] - 2024-08-04
+
+### Added
+- Script to MySQL database function.
+
+### Fixed
+- Fix Project structure forward slash ignorance bug.
+- Fixed bugs.
+
 ## [1.2.1] - 2024-08-02
 
 ### Added
