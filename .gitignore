@@ -48,3 +48,4 @@ venv.bak/
 /my_notes
 **/local_test
 **/test.py
+test_requirements.txt
