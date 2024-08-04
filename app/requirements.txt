@@ -1,7 +1,6 @@
 ### Excel
 xlsxwriter
 openpyxl
-pandas
 
 ### Environment Variables
 python-dotenv
