@@ -34,6 +34,7 @@ import json
 import time
 from datetime import datetime
 from pydantic_settings import BaseSettings
+from pydantic import ValidationError, ConfigDict
 import mysql.connector
 from mysql.connector import Error
 from fastapi import Request, status, HTTPException
@@ -119,8 +120,9 @@ class Settings(BaseSettings):
     MYSQL_HOST: str
     MYSQL_PORT: int
 
-    class Config:
-        env_file = ".env"  # Specify the environment file to load settings
+    @classmethod
+    def config(cls) -> ConfigDict:
+        return ConfigDict(env_file=".env")
 
 
 class SqlConnection:
@@ -170,7 +172,27 @@ class SqlConnection:
             HTTPException: If the connection pool cannot be created after retries.
         """
         # Initialize settings from environment variables
-        settings = Settings()
+        try:
+            settings = Settings()
+        except ValidationError as e:
+            # Log the detailed validation error for debugging
+            print(f"Error loading settings: {e}")
+
+            # Provide a user-friendly error message
+            print("Failed to load environment variables. Please check your .env file for correctness.")
+            print("""
+                Sample .env file is,
+                  
+                MYSQL_PASSWORD: str
+                MYSQL_DATABASE: str
+                MYSQL_USER: str
+                MYSQL_HOST: str
+                MYSQL_PORT: int
+            """)
+
+            # Optionally, you can provide fallback values or exit the application
+            # For example, you can exit with a specific status code
+            exit(1)
 
         for attempt in range(self.retries):
             try:
@@ -277,11 +299,10 @@ class SqlResponse:
         formatted_response = {
             "success": self.success,
             "result": {
-                "statusLine": f"HTTP/1.1 {self.status_code}",
                 "statusCode": self.status_code,
-                "headers": headers
+                "headers": headers,
+                "body": self.result
             },
-            "body": self.result,
             "error": self.error
         }
 
@@ -322,7 +343,7 @@ class SqlExecution:
     """
 
     @staticmethod
-    def execute_single_query(query: str, params: Optional[Dict[str, Any]] = None) -> SqlResponse:
+    def execute_single_query(db_conn, query: str, params: Optional[Dict[str, Any]] = None) -> SqlResponse:
         """
         Execute a single SQL query and return a formatted JSON response.
 
@@ -334,7 +355,7 @@ class SqlExecution:
             SqlResponse: The response object containing the success status, result, and optional error message.
         """
         try:
-            connection = SqlConnection().get_db_connection()
+            connection = db_conn
             cursor = connection.cursor(dictionary=True)
             cursor.execute(query, params or ())
             result = cursor.fetchall()
@@ -359,7 +380,7 @@ class SqlExecution:
             return sql_response.format_response()
 
     @staticmethod
-    def execute_transaction(queries: Dict[str, str], params: Optional[Dict[str, Any]] = None) -> SqlResponse:
+    def execute_transaction(db_conn, queries: Dict[str, str], params: Optional[Dict[str, Any]] = None) -> SqlResponse:
         """
         Execute multiple SQL queries within a transaction and return a formatted JSON response.
 
@@ -371,7 +392,7 @@ class SqlExecution:
             SqlResponse: The response object containing the success status, result, and optional error message.
         """
         try:
-            connection = SqlConnection().get_db_connection()
+            connection = db_conn
             cursor = connection.cursor(dictionary=True)
             for query in queries.values():
                 cursor.execute(query, params or ())
