@@ -1,0 +1,2 @@
+1. Add sql_functions.py
+2. Remove sql connection inside the calss
