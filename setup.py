@@ -28,7 +28,7 @@ setup(
     ],
     install_requires=requirements,
     extras_require={
-        "dev": ["pytest", "twine"],
+        "dev": ["pytest", "pytest-asyncio", "twine"],
     },
     python_requires=">=3.11",    
 )
