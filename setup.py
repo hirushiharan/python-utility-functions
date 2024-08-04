@@ -10,7 +10,7 @@ with open("app/README.md", "r") as f:
 
 setup(
     name="py_utility_scripts",
-    version="1.3.3",
+    version="1.4.0",
     description="A collection of utility scripts for working with files, Excel, logging, and database connections.",
     package_dir={"": "app"},
     packages=find_packages(where="app"),
@@ -28,7 +28,7 @@ setup(
     ],
     install_requires=requirements,
     extras_require={
-        "dev": ["pytest>=7.0", "twine>=4.0.2"],
+        "dev": ["pytest", "twine"],
     },
     python_requires=">=3.11",    
 )
