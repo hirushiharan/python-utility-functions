@@ -68,10 +68,15 @@ class ProjectStructure:
         for pattern in self.gitignore_patterns:
             pattern = pattern.replace('\\', '/')
             if pattern.endswith('/'):
+                # Match directory and all its contents
                 if fnmatch.fnmatch(path, pattern.rstrip('/') + '/*') or fnmatch.fnmatch(path, pattern.rstrip('/')):
                     return True
+            elif pattern.startswith('/'):
+                if fnmatch.fnmatch(path, pattern.strip('/') + '/*'):
+                    return True
             else:
-                if fnmatch.fnmatch(path, pattern):
+                # Match specific file or directory
+                if fnmatch.fnmatch(path, pattern) or fnmatch.fnmatch(path, pattern + '/*'):
                     return True
         return False
 
