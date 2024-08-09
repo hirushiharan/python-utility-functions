@@ -1,6 +1,7 @@
 ### Excel
 xlsxwriter
 openpyxl
+pandas
 
 ### Environment Variables
 python-dotenv
@@ -11,3 +12,7 @@ mysql-connector-python
 
 ### API
 fastapi
+uvicorn
+
+### Authentication
+jwt
