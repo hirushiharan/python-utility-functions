@@ -81,7 +81,7 @@ class TestLogFunctions(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.logger.log("This should raise an error.", "DEBUG")
         
-        print('====================Log Message Test Successful.====================')
+        print('====================Log Message Test Successful.====================\n')
 
 if __name__ == '__main__':
     unittest.main()

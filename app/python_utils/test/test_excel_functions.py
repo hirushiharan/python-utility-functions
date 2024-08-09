@@ -54,7 +54,7 @@ class TestExcelFunctions(unittest.TestCase):
         # Verify that the data read from the file matches the expected data
         self.assertEqual(values, expected_data, "The data read from the Excel file does not match the expected data.")
 
-        print('====================Excel Function Test Successful.====================')
+        print('====================Excel Function Test Successful.====================\n')
 
 if __name__ == '__main__':
     unittest.main()

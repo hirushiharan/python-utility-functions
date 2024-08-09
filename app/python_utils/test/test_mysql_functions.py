@@ -128,7 +128,7 @@ class TestMySqlHandler(unittest.TestCase):
         expected_body = json.dumps(expected_response)
         asyncio.run(self.async_test_execute_with_handling(mock_func, status.HTTP_500_INTERNAL_SERVER_ERROR, expected_body))
 
-        print('====================MySQL Function Test Successful.====================')
+        print('====================MySQL Function Test Successful.====================\n')
 
 if __name__ == '__main__':
     unittest.main()

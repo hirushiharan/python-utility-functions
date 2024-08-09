@@ -66,7 +66,7 @@ class TestProjectStructure(unittest.TestCase):
         root_folder = self.root_path.split('\\')[-1] + '/'
         self.assertIn(root_folder, content, "Root folder not found in Markdown file.")
 
-        print('====================Project Structure Generator Test Successful.====================')
+        print('====================Project Structure Generator Test Successful.====================\n')
 
 if __name__ == '__main__':
     unittest.main()
