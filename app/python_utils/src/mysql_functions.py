@@ -8,7 +8,7 @@ This module includes:
 
 2. **Settings**: A configuration class that uses Pydantic's BaseSettings to load environment variables for MySQL database configuration.
 
-3. **MtSqlConnection**: Manages MySQL database connections using a connection pool with retry mechanisms for robustness. It includes methods to create a connection pool and retrieve a connection with retry logic.
+3. **MySqlConnection**: Manages MySQL database connections using a connection pool with retry mechanisms for robustness. It includes methods to create a connection pool and retrieve a connection with retry logic.
 
 4. **MySqlResponse**: Handles the structure and formatting of MySQL operation responses. It provides methods to format successful and error responses for MySQL operations.
 
