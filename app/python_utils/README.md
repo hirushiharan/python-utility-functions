@@ -48,30 +48,30 @@ This script provides a project structure generatoe mechanism to print the given 
 #### Usage:
 - Create an instance of `ProjectStructure` and use `generate()` to generate the project structure of a given directory.
 
-### [`src/sql_connection.py`](src/sql_connection.py)
+### [`src/mysql_connection.py`](src/mysql_connection.py)
 
-This script handles the loading of environment variables and the establishment of connections to a MySQL database. It includes methods for managing the database connection and executing SQL queries.
+This script handles the loading of environment variables and the establishment of connections to a MySQL database. It includes methods for managing the database connection and executing MySQL queries.
 
 #### Classes:
 - **LoggingMiddleware**: A middleware class for logging HTTP request and response details. This class logs information about incoming HTTP requests and outgoing responses, which is valuable for monitoring and debugging purposes.
 - **Settings**: A configuration class for loading environment variables required for MySQL database configuration. It utilizes Pydantic's `BaseSettings` to load configuration details from environment variables, ensuring secure and configurable database connections.
-- **SqlConnection**: Provides a robust mechanism for managing database connections, including retry logic and connection pooling.
-- **SqlResponse**: Standardizes the response format for SQL operations, ensuring consistent handling of success and error cases.
-- **SqlExecution**: Encapsulates the logic for executing SQL queries and managing transactions, simplifying database interactions.
-- **SqlHandler**: Manages asynchronous function execution with standardized exception handling. It ensures consistent error handling and response formatting for asynchronous operations, enhancing the application's reliability.
+- **MySqlConnection**: Provides a robust mechanism for managing database connections, including retry logic and connection pooling.
+- **MySqlResponse**: Standardizes the response format for MySQL operations, ensuring consistent handling of success and error cases.
+- **MySqlExecution**: Encapsulates the logic for executing MySQL queries and managing transactions, simplifying database interactions.
+- **MySqlHandler**: Manages asynchronous function execution with standardized exception handling. It ensures consistent error handling and response formatting for asynchronous operations, enhancing the application's reliability.
 
 #### Usage:
-- This module can be used in a FastAPI application to manage MySQL database connections and execute SQL queries with robust error handling. The middleware and utility functions provided streamline logging and response formatting, making the application more maintainable and easier to debug.
+- This module can be used in a FastAPI application to manage MySQL database connections and execute MySQL queries with robust error handling. The middleware and utility functions provided streamline logging and response formatting, making the application more maintainable and easier to debug.
 - Create a `.env` file to store MySQL credentials. Below is an example `.env` file:
 
-        MYSQL_PASSWORD='<SQL_PASSWORD>'
-        MYSQL_DATABASE='<SQL_DATABASE>'
-        MYSQL_USER='<SQL_USER>'
-        MYSQL_HOST='<SQL_HOST>'
-        MYSQL_PORT='<SQL_PORT>'
+        MYSQL_PASSWORD='<MySQL_PASSWORD>'
+        MYSQL_DATABASE='<MySQL_DATABASE>'
+        MYSQL_USER='<MySQL_USER>'
+        MYSQL_HOST='<MySQL_HOST>'
+        MYSQL_PORT='<MySQL_PORT>'
 
 - Instantiate `LoggingMiddleware` to log details about incoming HTTP requests and outgoing responses, which aids in monitoring and debugging.
-- Instantiate `SqlConnection`, `SqlResponse`, `SqlExecution`, and `SqlHandler` to integrate with FastAPI APIs.
+- Instantiate `MySqlConnection`, `MySqlResponse`, `MySqlExecution`, and `MySqlHandler` to integrate with FastAPI APIs.
  
 
 ## Requirements

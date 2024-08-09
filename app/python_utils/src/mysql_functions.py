@@ -8,13 +8,13 @@ This module includes:
 
 2. **Settings**: A configuration class that uses Pydantic's BaseSettings to load environment variables for MySQL database configuration.
 
-3. **SqlConnection**: Manages MySQL database connections using a connection pool with retry mechanisms for robustness. It includes methods to create a connection pool and retrieve a connection with retry logic.
+3. **MtSqlConnection**: Manages MySQL database connections using a connection pool with retry mechanisms for robustness. It includes methods to create a connection pool and retrieve a connection with retry logic.
 
-4. **SqlResponse**: Handles the structure and formatting of SQL operation responses. It provides methods to format successful and error responses for SQL operations.
+4. **MySqlResponse**: Handles the structure and formatting of MySQL operation responses. It provides methods to format successful and error responses for MySQL operations.
 
-5. **SqlExecution**: Provides methods for executing SQL queries and transactions. It includes methods to execute single queries and manage transactions, returning responses formatted with success status and error messages if applicable.
+5. **MySqlExecution**: Provides methods for executing MySQL queries and transactions. It includes methods to execute single queries and manage transactions, returning responses formatted with success status and error messages if applicable.
 
-6. **SqlHandler**: A class that executes asynchronous functions with standard exception handling. It formats responses for both successful operations and errors, using the SqlResponse class to ensure consistent response formatting.
+6. **MySqlHandler**: A class that executes asynchronous functions with standard exception handling. It formats responses for both successful operations and errors, using the MySqlResponse class to ensure consistent response formatting.
 
 Imports:
 - `json`, `time`, `datetime`: Standard libraries for JSON handling, time management, and date-time operations.
@@ -97,7 +97,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         return response
 
 
-class SqlConnection:
+class MySqlConnection:
     """
     Manages MySQL database connections using a connection pool.
 
@@ -117,7 +117,7 @@ class SqlConnection:
 
     def __init__(self, retries=3, pool_name='My_App_Pool', pool_size=10, timeout=300):
         """
-        Initialize the SqlConnection with specified parameters.
+        Initialize the MySqlConnection with specified parameters.
 
         Args:
             retries (int, optional): Number of retry attempts. Defaults to 3.
@@ -204,7 +204,7 @@ class SqlConnection:
             try:
                 connection = self.connection_pool.get_connection()
                 if connection.is_connected():
-                    logger.log("SQL Connection Successful", INFO)
+                    logger.log("MySQL Connection Successful", INFO)
                     return connection
             except Error as err:
                 logger.log(f"Attempt {attempt + 1}: Error getting connection: {err}", ERROR)
@@ -216,9 +216,9 @@ class SqlConnection:
                 time.sleep(2)  # Wait before retrying
 
 
-class SqlResponse:
+class MySqlResponse:
     """
-    Handles the structure and formatting of SQL operation responses.
+    Handles the structure and formatting of MySQL operation responses.
 
     Attributes:
         success (bool): Indicates if the operation was successful.
@@ -235,7 +235,7 @@ class SqlResponse:
     def __init__(self, success: bool, result: Any, status_code: int, response: JSONResponse, 
                  error: Optional[str] = None):
         """
-        Initialize the SqlResponse with the provided parameters.
+        Initialize the MySqlResponse with the provided parameters.
 
         Args:
             success (bool): Indicates if the operation was successful.
@@ -302,28 +302,28 @@ class SqlResponse:
         )
 
 
-class SqlExecution:
+class MySqlExecution:
     """
-    Handles the execution of SQL queries and transactions.
+    Handles the execution of MySQL queries and transactions.
 
-    Provides methods for executing single SQL statements and managing database transactions.
+    Provides methods for executing single MySQL statements and managing database transactions.
 
     Methods:
-        execute_single_query(query: str, params: Optional[Dict[str, Any]] = None): Executes a single SQL query.
-        execute_transaction(queries: Dict[str, str], params: Optional[Dict[str, Any]] = None): Executes multiple SQL queries within a transaction.
+        execute_single_query(query: str, params: Optional[Dict[str, Any]] = None): Executes a single MySQL query.
+        execute_transaction(queries: Dict[str, str], params: Optional[Dict[str, Any]] = None): Executes multiple MySQL queries within a transaction.
     """
 
     @staticmethod
-    def execute_single_query(db_conn, query: str, params: Optional[Dict[str, Any]] = None) -> SqlResponse:
+    def execute_single_query(db_conn, query: str, params: Optional[Dict[str, Any]] = None) -> MySqlResponse:
         """
-        Execute a single SQL query and return a formatted JSON response.
+        Execute a single MySQL query and return a formatted JSON response.
 
         Args:
-            query (str): The SQL query to be executed.
-            params (Optional[Dict[str, Any]], optional): Parameters for the SQL query. Defaults to None.
+            query (str): The MySQL query to be executed.
+            params (Optional[Dict[str, Any]], optional): Parameters for the MySQL query. Defaults to None.
 
         Returns:
-            SqlResponse: The response object containing the success status, result, and optional error message.
+            MySqlResponse: The response object containing the success status, result, and optional error message.
         """
         try:
             connection = db_conn
@@ -333,34 +333,34 @@ class SqlExecution:
             connection.commit()
             cursor.close()
             connection.close()
-            sql_response = SqlResponse(
+            mysql_response = MySqlResponse(
                 success=True,
                 result=result,
                 status_code=status.HTTP_200_OK,
                 response=JSONResponse(content={"result": result}),
             )
-            return sql_response.format_response()
+            return mysql_response.format_response()
         except Error as e:
-            sql_response = SqlResponse(
+            mysql_response = MySqlResponse(
                 success=False,
                 result={},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 response=JSONResponse(content={"message": str(e)}),
                 error=str(e)
             )
-            return sql_response.format_response()
+            return mysql_response.format_response()
 
     @staticmethod
-    def execute_transaction(db_conn, queries: Dict[str, str], params: Optional[Dict[str, Any]] = None) -> SqlResponse:
+    def execute_transaction(db_conn, queries: Dict[str, str], params: Optional[Dict[str, Any]] = None) -> MySqlResponse:
         """
-        Execute multiple SQL queries within a transaction and return a formatted JSON response.
+        Execute multiple MySQL queries within a transaction and return a formatted JSON response.
 
         Args:
-            queries (Dict[str, str]): Dictionary containing SQL queries to be executed.
-            params (Optional[Dict[str, Any]], optional): Parameters for the SQL queries. Defaults to None.
+            queries (Dict[str, str]): Dictionary containing MySQL queries to be executed.
+            params (Optional[Dict[str, Any]], optional): Parameters for the MySQL queries. Defaults to None.
 
         Returns:
-            SqlResponse: The response object containing the success status, result, and optional error message.
+            MySqlResponse: The response object containing the success status, result, and optional error message.
         """
         try:
             connection = db_conn
@@ -370,26 +370,26 @@ class SqlExecution:
             connection.commit()
             cursor.close()
             connection.close()
-            sql_response = SqlResponse(
+            mysql_response = MySqlResponse(
                 success=True,
                 result={"message": "Transaction successful"},
                 status_code=status.HTTP_200_OK,
                 response=JSONResponse(content={"message": "Transaction successful"}),
             )
-            return sql_response.format_response()
+            return mysql_response.format_response()
         except Error as e:
-            sql_response = SqlResponse(
+            mysql_response = MySqlResponse(
                 success=False,
                 result={},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 response=JSONResponse(content={"message": str(e)}),
                 error=str(e)
             )
-            return sql_response.format_response()
+            return mysql_response.format_response()
 
-class SqlHandler:
+class MySqlHandler:
     """
-    A class to handle SQL operations with standard exception handling.
+    A class to handle MySQL operations with standard exception handling.
 
     Methods:
         execute_with_handling(func, *args, **kwargs): Execute an asynchronous function with error handling.
@@ -417,14 +417,14 @@ class SqlHandler:
                 content={"message": str(e.detail)},
                 status_code=e.status_code
             )
-            sql_response = SqlResponse(
+            mysql_response = MySqlResponse(
                 success=False,
                 result=None,
                 status_code=e.status_code,
                 response=error_response,
                 error=str(e.detail)
             )
-            formatted_response = sql_response.format_response()
+            formatted_response = mysql_response.format_response()
             return JSONResponse(content=formatted_response, status_code=e.status_code)
         except Exception as e:
             # Handle other exceptions with generic formatting
@@ -432,12 +432,12 @@ class SqlHandler:
                 content={"message": str(e)},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-            sql_response = SqlResponse(
+            mysql_response = MySqlResponse(
                 success=False,
                 result=None,
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 response=error_response,
                 error=str(e)
             )
-            formatted_response = sql_response.format_response()
+            formatted_response = mysql_response.format_response()
             return JSONResponse(content=formatted_response, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)

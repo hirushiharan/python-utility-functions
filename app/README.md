@@ -125,22 +125,22 @@ This script provides a flexible logging mechanism that supports logging messages
 
 ### [`src/project_structure_gen.py`](src/project_structure_gen.py)
 
-This script provides functionalities for establishing a connection to a MySQL database, executing SQL queries, and managing the database connection. It uses the mysql-connector-python library and supports environment variable management using the python-dotenv library.
+This script provides functionalities for establishing a connection to a MySQL database, executing MySQL queries, and managing the database connection. It uses the mysql-connector-python library and supports environment variable management using the python-dotenv library.
 
 #### Class:
 - **LoggingMiddleware**: Middleware for logging HTTP request and response details. This class logs details about incoming HTTP requests and outgoing responses, which is helpful for monitoring and debugging purposes.
 - **Settings**: A configuration class for loading environment variables for MySQL database configuration. Uses Pydantic's BaseSettings to load configuration details from environment variables, ensuring secure and configurable database connections.
-- **SqlConnection**: Provides a robust mechanism for managing database connections, including retry logic and connection pooling.
-- **SqlResponse**: Standardizes the response format for SQL operations, ensuring consistent handling of success and error cases.
-- **SqlExecution**: Encapsulates the logic for executing SQL queries and managing transactions, which simplifies database interactions.
-- **SqlHandler**: Handles asynchronous function execution with standard exception handling. Ensures consistent error handling and response formatting for asynchronous operations, enhancing the reliability of the application.
+- **MySqlConnection**: Provides a robust mechanism for managing database connections, including retry logic and connection pooling.
+- **MySqlResponse**: Standardizes the response format for MySQL operations, ensuring consistent handling of success and error cases.
+- **MySqlExecution**: Encapsulates the logic for executing MySQL queries and managing transactions, which simplifies database interactions.
+- **MySqlHandler**: Handles asynchronous function execution with standard exception handling. Ensures consistent error handling and response formatting for asynchronous operations, enhancing the reliability of the application.
 
 #### Usage:
-- The module can be used in a FastAPI application to manage MySQL database connections and execute SQL queries with robust error handling. The middleware and utility functions provided streamline logging and response formatting, making the application more maintainable and easier to debug.
+- The module can be used in a FastAPI application to manage MySQL database connections and execute MySQL queries with robust error handling. The middleware and utility functions provided streamline logging and response formatting, making the application more maintainable and easier to debug.
 
 #### Example
 
-    from python_utils import LoggingMiddleware, SqlConnection, SqlExecution, SqlHandler, Logger
+    from python_utils import LoggingMiddleware, MySqlConnection, MySqlExecution, MySqlHandler, Logger
     from fastapi import HTTPException, status, Query
     from fastapi import FastAPI, Depends
     from fastapi.responses import JSONResponse
@@ -156,7 +156,7 @@ This script provides functionalities for establishing a connection to a MySQL da
     def fetch_user_by_email(email: str, db_conn) -> dict:
         try:
             query = "SELECT * FROM user WHERE email = %s"
-            result = SqlExecution.execute_single_query(db_conn, query, (email,))
+            result = MySqlExecution.execute_single_query(db_conn, query, (email,))
             if not result:
                 raise HTTPException(status_code=404, detail="User not found")
             logger.log(f"Fetched data for '{email}' from user table", INFO)
@@ -175,8 +175,8 @@ This script provides functionalities for establishing a connection to a MySQL da
         return JSONResponse(content=data, status_code=status.HTTP_200_OK)
 
     @app.get("/user", response_description="Retrieve user data by email")
-    async def get_user(email: str = Query(...), db_conn=Depends(SqlConnection().get_db_connection)) -> JSONResponse:
-        return await SqlHandler.execute_with_handling(get_user_handler, email, db_conn)
+    async def get_user(email: str = Query(...), db_conn=Depends(MySqlConnection().get_db_connection)) -> JSONResponse:
+        return await MySqlHandler.execute_with_handling(get_user_handler, email, db_conn)
 
     def main():
         try:

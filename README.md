@@ -17,7 +17,7 @@ Packaging your code offers several benefits, including:
 
 ## Code Example
 
-This library contains various utility functions for handling Excel files, file operations, logging, and SQL connections.
+This library contains various utility functions for handling Excel files, file operations, logging, and MySQL connections.
 
 ### Features
 
@@ -44,14 +44,14 @@ The project is organized as follows:
       │   │   │   ├── file_functions.py
       │   │   │   ├── log_message.py
       │   │   │   ├── project_structure_generator.py
-      │   │   │   └── sql_functions.py
+      │   │   │   └── mysql_functions.py
       │   │   ├── tests/
       │   │   │   ├── __init__.py
       │   │   │   ├── test_excel_functions.py
       │   │   │   ├── test_file_functions.py
       │   │   │   ├── test_log_message.py
       │   │   │   ├── test_project_structure_generator.py
-      │   │   │   └── test_sql_functions.py
+      │   │   │   └── test_mysql_functions.py
       │   │   └── __init__.py
       │   ├── __init__.py
       │   ├── README.md
