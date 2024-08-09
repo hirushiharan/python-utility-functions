@@ -16,3 +16,6 @@ uvicorn
 
 ### Authentication
 jwt
+
+### Email
+email-validator
