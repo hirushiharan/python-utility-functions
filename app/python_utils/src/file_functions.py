@@ -84,8 +84,8 @@ class FileRenamer:
 
         for file in files:
             extension = file.split(".")[-1]
-            self.count += 1
             new_name = self.name_format.format(prefix=self.prefix, count=self.count) + f".{extension}"
             old_path = os.path.join(self.path, file)
             new_path = os.path.join(self.path, new_name)
             self.rename_file(old_path, new_path)
+            self.count += 1
