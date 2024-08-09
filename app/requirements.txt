@@ -15,7 +15,7 @@ fastapi
 uvicorn
 
 ### Authentication
-jwt
+PyJWT
 
 ### Email
 email-validator
