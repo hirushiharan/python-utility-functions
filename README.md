@@ -27,6 +27,8 @@ This library contains various utility functions for handling Excel files, file o
 - Provide flexible logging to both console and log file in JSON format with log file rotation
 - Generate the structure of a given directory, following the provided Project Structure format
 - MySQL functions for connecting to databases, logging middleware, executing queries, handling execution, and formatting responses
+- Basic functions to configure environment variables, generate secret key, password functions and send email.
+- JWT Authentication functions to generate & decode JWT authentication token.
 
 ## Project Structure
 
@@ -40,6 +42,8 @@ The project is organized as follows:
       │   ├── python_utils/
       │   │   ├── src/
       │   │   │   ├── __init__.py
+      │   │   │   ├── auth_functions.py
+      │   │   │   ├── base_functions.py
       │   │   │   ├── excel_functions.py
       │   │   │   ├── file_functions.py
       │   │   │   ├── log_message.py
@@ -47,6 +51,8 @@ The project is organized as follows:
       │   │   │   └── mysql_functions.py
       │   │   ├── tests/
       │   │   │   ├── __init__.py
+      │   │   │   ├── test_auth_functions.py
+      │   │   │   ├── test_base_functions.py
       │   │   │   ├── test_excel_functions.py
       │   │   │   ├── test_file_functions.py
       │   │   │   ├── test_log_message.py

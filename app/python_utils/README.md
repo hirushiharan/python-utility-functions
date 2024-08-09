@@ -52,6 +52,11 @@ This script provides a project structure generatoe mechanism to print the given 
 
 This script handles the loading of environment variables and the establishment of connections to a MySQL database. It includes methods for managing the database connection and executing MySQL queries.
 
+
+### [`src/base_functions.py`](src/base_functions.py)
+
+This script is designed to provides utility classes and functions essential for environment variables configuration, secure secret key generation, password management, and email functionality. These utilities can be reused across various projects to streamline common tasks such as configuration management and secure operations.
+
 #### Classes:
 - **LoggingMiddleware**: A middleware class for logging HTTP request and response details. This class logs information about incoming HTTP requests and outgoing responses, which is valuable for monitoring and debugging purposes.
 - **Settings**: A configuration class for loading environment variables required for MySQL database configuration. It utilizes Pydantic's `BaseSettings` to load configuration details from environment variables, ensuring secure and configurable database connections.
@@ -72,7 +77,27 @@ This script handles the loading of environment variables and the establishment o
 
 - Instantiate `LoggingMiddleware` to log details about incoming HTTP requests and outgoing responses, which aids in monitoring and debugging.
 - Instantiate `MySqlConnection`, `MySqlResponse`, `MySqlExecution`, and `MySqlHandler` to integrate with FastAPI APIs.
- 
+
+#### Class:
+- **Settings**: A configuration class that uses Pydantic's `BaseSettings` to load environment variables for MySQL database configuration. It automatically reads from a `.env` file, making it easier to manage environment-specific configurations.
+- **BaseFunctions**: A class includes basic utility functions, such as generating secure secrets.
+- **PasswordFunctions**: Class handles password-related operations such as hashing, verification, and generating temporary passwords. It leverages the `passlib` library for secure password management.
+- **EmailFunction**: Class simplifies the process of sending emails via an SMTP server. It handles the creation and structuring of email messages using the `email.mime` library.
+
+#### Usage:
+- The script can be seamlessly integrated into any project where there's a need to configure environment varibales, authentication and send email.
+- Ensure that environment variables for database configuration are set in the `.env` file as specified in the `Settings` class.
+- Logging should be managed through the `Logger` class defined in `log_message.py`.
+
+### [`src/auth_functions.py`](src/auth_functions.py)
+
+This script is designed to provides utility functions for generating and decoding JWT tokens, crucial for authentication purposes. It also includes error handling and logging for better traceability and debugging.
+
+#### Class:
+- **JwtAuthFunctions**: A utility class for handling JWT token operations including generation and decoding of tokens.
+
+#### Usage:
+- The script can be seamlessly integrated into any project where there's a need to provide authentication functions.
 
 ## Requirements
 
@@ -81,6 +106,7 @@ Make sure to install the required packages listed in `requirements.txt`:
 - Excel Class Dependancies
     - xlsxwriter
     - python-dotenv
+    - pandas
 
 - Environment Variables Dependancies
     - python-dotenv
@@ -91,6 +117,13 @@ Make sure to install the required packages listed in `requirements.txt`:
 
 - API Dependancies
     - fastapi
+    -uvicorn
+
+- Authentication
+    - PyJWT
+
+- Email
+    - email-validator
 
 ## Installation
 

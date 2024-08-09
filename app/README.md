@@ -7,6 +7,7 @@ Welcome to the Python Utils repository! This project contains a collection of ut
 - Excel Class Dependancies
     - xlsxwriter
     - python-dotenv
+    - pandas
 
 - Environment Variables Dependancies
     - python-dotenv
@@ -17,6 +18,13 @@ Welcome to the Python Utils repository! This project contains a collection of ut
 
 - API Dependancies
     - fastapi
+    -uvicorn
+
+- Authentication
+    - PyJWT
+
+- Email
+    - email-validator
 
 ## Requirements
 
@@ -89,7 +97,7 @@ This script renames all files in a specified directory to a sequentially numbere
     count = 0
     path = r'D:\images\Walpapers'
 
-    file_renamer = FileRenamer(path, prefix=prefix, name_format="{prefix}-{count:03d}")
+    file_renamer = FileRenamer(path, prefix=prefix, count=count, name_format="{prefix}-{count:03d}")
     file_renamer.rename_files()
 
 ### [`log_message.py`](python_utils/src/log_message.py)
@@ -123,7 +131,7 @@ This script provides a flexible logging mechanism that supports logging messages
     # Remove an existing log level
     logger.remove_log_level("DEBUG")
 
-### [`src/project_structure_gen.py`](src/project_structure_gen.py)
+### [`src/mysql_functions.py`](src/mysql_functions.py)
 
 This script provides functionalities for establishing a connection to a MySQL database, executing MySQL queries, and managing the database connection. It uses the mysql-connector-python library and supports environment variable management using the python-dotenv library.
 
@@ -188,4 +196,177 @@ This script provides functionalities for establishing a connection to a MySQL da
 
     if __name__ == '__main__':
         main()
-            
+
+### [`src/project_structure_gen.py`](src/project_structure_gen.py)
+
+This script is designed to facilitate the creation of a comprehensive directory structure for your projects, with the added ability to generate a Markdown file documenting this structure. Utilizing the mysql-connector-python library, it also supports database interactions, and environment variables can be managed efficiently using the python-dotenv library.
+
+#### Class:
+- **ProjectStructure**: A class that handles the generation of the project's directory structure and the creation of a corresponding Markdown file.
+
+#### Usage:
+- The script can be seamlessly integrated into any project where there's a need to generate and document the project's directory structure in Markdown format.
+
+#### Example
+
+    from python_utils import ProjectStructure
+    import os
+
+    # Define the root directory of your project
+    root_path = r'D:\repos\current\python-utility-functions'
+
+    # Specify the .gitignore file to exclude certain files or directories
+    gitignore_file = os.path.join(root_path, '.gitignore')
+
+    # Define the output path for the generated Markdown file
+    md_file = r'output\structure.md'
+
+    # Initialize the ProjectStructure object
+    project_structure = ProjectStructure(root_path, gitignore_file, md_file)
+
+    # Generate the directory structure and save it as a Markdown file
+    project_structure.generate()
+
+
+### [`src/base_functions.py`](src/base_functions.py)
+
+This script is designed to provides utility classes and functions essential for environment variables configuration, secure secret key generation, password management, and email functionality. These utilities can be reused across various projects to streamline common tasks such as configuration management and secure operations.
+
+
+#### Class:
+- **Settings**: A configuration class that uses Pydantic's `BaseSettings` to load environment variables for MySQL database configuration. It automatically reads from a `.env` file, making it easier to manage environment-specific configurations.
+
+    ***Attributes:***
+    - `MYSQL_PASSWORD` (str): The root password for MySQL.
+    - `MYSQL_DATABASE` (str): The name of the MySQL database.
+    - `MYSQL_USER` (str): The MySQL user.
+    - `MYSQL_HOST` (str): The MySQL host.
+    - `MYSQL_PORT` (int): The port for MySQL connection.
+    - `SECRET_KEY` (str): Secret key for JWT authentication.
+    - `ALGORITHM` (str): Secret key algorithm for JWT authentication.
+
+    ***Methods:***
+    - `config(cls) -> ConfigDict`: Specifies the environment file (`.env`) to load settings from.
+
+
+- **BaseFunctions**: A class includes basic utility functions, such as generating secure secrets.
+
+    ***Methods:***
+    - `gen_secrets(hex_count: int) -> str`: Generates a secure random hexadecimal string of the specified length.
+
+
+- **PasswordFunctions**: Class handles password-related operations such as hashing, verification, and generating temporary passwords. It leverages the `passlib` library for secure password management.
+    ***Attributes:***
+    - `plain_password` (str): The plaintext password.
+    - `hashed_password` (str): The hashed password.
+    - `temp_password_length` (int): The length of the temporary password.
+
+    ***Methods:***
+    - `hash_password() -> str`: Hashes a plaintext password using the bcrypt algorithm.
+    - `verify_password() -> bool`: Verifies a plaintext password against a hashed password.
+    - `generate_temp_password() -> str`: Generates a secure random temporary password of a specified length.
+
+
+- **EmailFunction**: Class simplifies the process of sending emails via an SMTP server. It handles the creation and structuring of email messages using the `email.mime` library.
+    ***Methods:***
+    - `send_email(subject: str, body: str, to_email: str, from_email: str, smtp_server: str, smtp_port: int, smtp_user: str, smtp_password: str) -> None`: Sends an email with the specified subject and body to a given recipient.
+
+
+#### Usage:
+- The script can be seamlessly integrated into any project where there's a need to configure environment varibales, authentication and send email.
+- Ensure that environment variables for database configuration are set in the `.env` file as specified in the `Settings` class.
+- Logging should be managed through the `Logger` class defined in `log_message.py`.
+
+#### Example
+
+    from python_utils import Settings, BaseFunctions, PasswordFunctions, EmailFunction
+
+    # 1. Using the Settings class to load environment variables for MySQL configuration
+    settings = Settings()
+    print(f"MySQL User: {settings.MYSQL_USER}")
+    print(f"MySQL Host: {settings.MYSQL_HOST}")
+
+    # 2. Using BaseFunctions to generate a secure random secret
+    secure_secret = BaseFunctions.gen_secrets(hex_count=32)
+    print(f"Generated Secure Secret: {secure_secret}")
+
+    # 3. Using PasswordFunctions for password management
+    plain_password = "MySecurePassword"
+    password_func = PasswordFunctions(plain_password=plain_password)
+
+    # Hash the password
+    hashed_password = password_func.hash_password()
+    print(f"Hashed Password: {hashed_password}")
+
+    # Verify the password
+    is_password_correct = password_func.verify_password()
+    print(f"Is the password correct? {'Yes' if is_password_correct else 'No'}")
+
+    # Generate a temporary password
+    temp_password = password_func.generate_temp_password()
+    print(f"Generated Temporary Password: {temp_password}")
+
+    # 4. Using EmailFunction to send an email
+    email_func = EmailFunction()
+
+    subject = "Test Email"
+    body = "This is a test email sent from the base_functions module."
+    to_email = "recipient@example.com"
+    from_email = "sender@example.com"
+    smtp_server = "smtp.example.com"
+    smtp_port = 587
+    smtp_user = "smtp_user"
+    smtp_password = "smtp_password"
+
+    # Send the email
+    email_func.send_email(
+        subject=subject,
+        body=body,
+        to_email=to_email,
+        from_email=from_email,
+        smtp_server=smtp_server,
+        smtp_port=smtp_port,
+        smtp_user=smtp_user,
+        smtp_password=smtp_password
+    )
+
+    print("Email sent successfully!")
+
+### [`src/auth_functions.py`](src/auth_functions.py)
+
+This script is designed to provides utility functions for generating and decoding JWT tokens, crucial for authentication purposes. It also includes error handling and logging for better traceability and debugging.
+
+
+
+#### Class:
+- **JwtAuthFunctions**: A utility class for handling JWT token operations including generation and decoding of tokens.
+
+
+    ***Attributes:***
+    - `secret_key (str)`: The secret key used for signing the JWT tokens.
+    - `algorithm (str)`: The algorithm used for encoding the JWT tokens (default is `"HS256"`).
+    - `auth_email (str)`: The email address used as a payload for generating the JWT token.
+    - `expiration_duration (int)`: The token's expiration duration in hours (default is `1` hour).
+
+
+    ***Methods:***
+    - `__init__(self, auth_email: str = None, expiration_duration: int = 1, secret_key: str = None, algorithm: str = "HS256") -> None`
+
+
+#### Usage:
+- The script can be seamlessly integrated into any project where there's a need to provide authentication functions.
+
+#### Example
+
+    from python_utils import Settings, BaseFunctions, PasswordFunctions, EmailFunction
+
+    # Initialize JwtAuthFunctions with email and secret key
+    jwt_auth = JwtAuthFunctions(auth_email="user@example.com", secret_key="your_secret_key")
+
+    # Generate JWT Token
+    token = jwt_auth.generate_jwt_token()
+    print(f"Generated Token: {token}")
+
+    # Decode JWT Token
+    decoded_payload = jwt_auth.decode_jwt_token(token)
+    print(f"Decoded Payload: {decoded_payload}")
