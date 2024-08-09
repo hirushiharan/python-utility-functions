@@ -33,8 +33,7 @@ Note:
 import json
 import time
 from datetime import datetime
-from pydantic_settings import BaseSettings
-from pydantic import ValidationError, ConfigDict
+from pydantic import ValidationError
 import mysql.connector
 from mysql.connector import Error
 from fastapi import Request, status, HTTPException
@@ -42,7 +41,8 @@ from fastapi.responses import JSONResponse
 from typing import Dict, Any, Optional, Callable
 from mysql.connector.pooling import MySQLConnectionPool
 from starlette.middleware.base import BaseHTTPMiddleware
-from .log_message import Logger
+from log_message import Logger
+from base_functions import Settings
 
 # Constants for log levels
 INFO = "INFO"
@@ -95,34 +95,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         logger.log(message=json.dumps(log_message), level=INFO)
 
         return response
-
-
-class Settings(BaseSettings):
-    """
-    Configuration class for loading settings from environment variables.
-
-    Uses Pydantic's BaseSettings to automatically load environment variables for database configuration.
-
-    Attributes:
-        MYSQL_PASSWORD (str): The root password for MySQL.
-        MYSQL_DATABASE (str): The name of the MySQL database.
-        MYSQL_USER (str): The MySQL user.
-        MYSQL_HOST (str): The MySQL host.
-        MYSQL_PORT (int): The port for MySQL connection.
-
-    Config:
-        env_file (str): Specifies the environment file to load settings from.
-    """
-
-    MYSQL_PASSWORD: str
-    MYSQL_DATABASE: str
-    MYSQL_USER: str
-    MYSQL_HOST: str
-    MYSQL_PORT: int
-
-    @classmethod
-    def config(cls) -> ConfigDict:
-        return ConfigDict(env_file=".env")
 
 
 class SqlConnection:
@@ -188,10 +160,9 @@ class SqlConnection:
                 MYSQL_USER: str
                 MYSQL_HOST: str
                 MYSQL_PORT: int
+                SECRET_KEY: str
             """)
 
-            # Optionally, you can provide fallback values or exit the application
-            # For example, you can exit with a specific status code
             exit(1)
 
         for attempt in range(self.retries):
