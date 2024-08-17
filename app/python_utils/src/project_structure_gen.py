@@ -1,7 +1,10 @@
 """
-This module provides functionality to generate and format the directory structure
-of a project, excluding files and directories specified in a .gitignore file.
-It also writes the formatted project structure to a Markdown (.md) file.
+Module: project_structure_gen.py
+
+Description:
+    This module provides functionality to generate and format the directory structure
+    of a project, excluding files and directories specified in a .gitignore file.
+    It also writes the formatted project structure to a Markdown (.md) file.
 
 Classes:
     ProjectStructure: A class to handle the reading of .gitignore patterns, 
@@ -16,20 +19,30 @@ Usage:
 import os
 import fnmatch
 from pathlib import Path
+from .log_message import Logger
+
+# Constants for log levels
+INFO = "INFO"
+ERROR = "ERROR"
+
+# Initialize the logger
+logger = Logger()
 
 class ProjectStructure:
-    def __init__(self, root_dir, gitignore_file, md_file='project_structure.md'):
+    def __init__(self, root_dir, gitignore_file, custom_patterns, md_file='project_structure.md'):
         """
         Initializes the ProjectStructure instance.
 
         Args:
             root_dir (str): The root directory of the project.
             gitignore_file (str): The path to the .gitignore file.
+            custom_patterns (list): List of custom patterns to ignore.
             md_file (str): The path to the Markdown file where the structure will be saved. Default is 'project_structure.md'.
         """
         self.root_dir = root_dir
         self.gitignore_file = gitignore_file
         self.md_file = md_file
+        self.custom_patterns = custom_patterns
         self.gitignore_patterns = self.read_gitignore_patterns()
 
     def read_gitignore_patterns(self):
@@ -37,7 +50,7 @@ class ProjectStructure:
         Reads the .gitignore file and returns a list of patterns.
 
         Returns:
-            List[str]: A list of patterns read from the .gitignore file.
+            list: A list of patterns read from the .gitignore file.
         """
         patterns = []
         try:
@@ -46,12 +59,13 @@ class ProjectStructure:
                     line = line.strip()
                     if line and not line.startswith('#'):
                         patterns.append(line)
+            logger.log("Gitignore patterns captured successfully.", INFO)
         except FileNotFoundError:
-            print(f"Error: The file {self.gitignore_file} was not found.")
+            logger.log(f"Error: The file {self.gitignore_file} was not found.", ERROR)
         except IOError as e:
-            print(f"Error: An IOError occurred while reading the file: {e}")
+            logger.log(f"Error: An IOError occurred while reading the file: {e}", ERROR)
         
-        patterns.append('.git')
+        patterns.extend(self.custom_patterns)
         return patterns
 
     def is_ignored(self, path):
@@ -67,17 +81,8 @@ class ProjectStructure:
         path = path.replace('\\', '/')
         for pattern in self.gitignore_patterns:
             pattern = pattern.replace('\\', '/')
-            if pattern.endswith('/'):
-                # Match directory and all its contents
-                if fnmatch.fnmatch(path, pattern.rstrip('/') + '/*') or fnmatch.fnmatch(path, pattern.rstrip('/')):
-                    return True
-            elif pattern.startswith('/'):
-                if fnmatch.fnmatch(path, pattern.strip('/') + '/*'):
-                    return True
-            else:
-                # Match specific file or directory
-                if fnmatch.fnmatch(path, pattern) or fnmatch.fnmatch(path, pattern + '/*'):
-                    return True
+            if fnmatch.fnmatch(path, pattern.rstrip('/') + '/*') or fnmatch.fnmatch(path, pattern.rstrip('/')):
+                return True
         return False
 
     def get_project_structure(self):
@@ -85,7 +90,7 @@ class ProjectStructure:
         Generates the directory structure of the project, excluding ignored files and directories.
 
         Returns:
-            List[str]: List of paths that are not ignored.
+            list: List of paths that are not ignored.
         """
         structure = []
         try:
@@ -111,7 +116,7 @@ class ProjectStructure:
                     if not self.is_ignored(full_path):
                         structure.append(full_path)
         except Exception as e:
-            print(f"Error: An exception occurred while generating project structure: {e}")
+            logger.log(f"Error: An exception occurred while generating project structure: {e}", ERROR)
         
         return structure
 
@@ -120,7 +125,7 @@ class ProjectStructure:
         Formats the project structure into a hierarchical text format.
 
         Args:
-            structure (List[str]): List of paths in the project structure.
+            structure (list): List of paths in the project structure.
 
         Returns:
             str: Formatted project structure.
@@ -156,7 +161,7 @@ class ProjectStructure:
         Adds paths to the formatted list with correct indentation.
 
         Args:
-            formatted (List[str]): List of formatted paths.
+            formatted (list): List of formatted paths.
             path (str): The path to format.
             depth (int): The depth level for indentation.
         """
@@ -190,7 +195,7 @@ class ProjectStructure:
                 with open(self.md_file, "w", encoding="utf-8") as file:
                     pass  # Create an empty file
         except IOError as e:
-            print(f"Error: An IOError occurred while creating the Markdown file: {e}")
+            logger.log(f"Error: An IOError occurred while creating the Markdown file: {e}", ERROR)
 
     def generate(self):
         """
@@ -221,4 +226,4 @@ class ProjectStructure:
             with open(self.md_file, "w", encoding="utf-8") as f:
                 f.write(output)
         except Exception as e:
-            print(f"Error: An exception occurred while generating the Markdown file: {e}")
+            logger.log(f"Error: An exception occurred while generating the Markdown file: {e}", ERROR)

@@ -1,47 +1,74 @@
 """
-This script renames all files in a specified directory to a sequentially 
-numbered format with a user-defined prefix and format.
+Module: file_functions.py
+
+Description:
+    This module provides functionality for renaming files in a specified directory. 
+    The FileRenamer class allows users to rename all files within a directory to a 
+    sequentially numbered format with a user-defined prefix and naming format. The 
+    module is useful for batch renaming files in a consistent and automated manner.
 
 Classes:
-- FileRenamer: Handles the file renaming process within a specified directory.
+    FileRenamer:
+        Handles the file renaming process within a specified directory. 
+        The class allows customization of the prefix, starting count, 
+        and naming format for the renamed files.
 
 Usage:
-- Ensure the 'path' variable in the main function is set to the target directory.
-- Create an instance of FileRenamer with the desired path, prefix, and name format.
-- Run the script to rename files based on the specified format.
+    - Set the 'path' variable in the main function to the target directory.
+    - Create an instance of FileRenamer with the desired path, prefix, and name format.
+    - Run the script to rename files based on the specified format.
 
 Note:
-- This script does not handle subdirectories; it processes files in the specified directory only.
-- Ensure appropriate permissions and backups before running the script.
+    - This script processes only files in the specified directory and does not handle subdirectories.
+    - Ensure appropriate permissions and backups before running the script.
+
+Imports:
+    - os: For interacting with the operating system, specifically for directory and file operations.
+    - Logger: Custom logging class from log_message.py for logging operations.
 """
 
 import os
+from .log_message import Logger
+
+# Constants for log levels
+INFO = "INFO"
+ERROR = "ERROR"
+
+# Initialize the logger
+logger = Logger()
 
 class FileRenamer:
     """
     A class to handle renaming files in a specified directory.
 
     Attributes:
-    path (str): The path to the directory containing files to rename.
-    prefix (str): The prefix to use for renamed files.
-    count (int): The starting number for the file renaming sequence.
-    name_format (str): The format string for renaming files.
-
-    Methods:
-    get_paths(): Returns all the files and directories in the given path.
-    rename_file(old_name, new_name): Renames a file or folder.
-    rename_files(): Renames all files in the specified directory to a sequentially numbered format with the prefix.
-    """
-    
-    def __init__(self, path, prefix="wallpaper", count=0, name_format="{prefix}-{count}"):
-        """
-        Initializes the FileRenamer with the target directory path, prefix, starting count, and name format.
-
-        Parameters:
         path (str): The path to the directory containing files to rename.
         prefix (str): The prefix to use for renamed files.
         count (int): The starting number for the file renaming sequence.
         name_format (str): The format string for renaming files.
+
+    Methods:
+        get_paths():
+            Returns all files and directories in the specified path.
+
+        rename_file(old_name, new_name):
+            Renames a file or folder from old_name to new_name.
+
+        rename_files():
+            Renames all files in the specified directory to a sequentially 
+            numbered format with the prefix.
+    """
+    
+    def __init__(self, path, prefix="file", count=0, name_format="{prefix}-{count}"):
+        """
+        Initializes the FileRenamer with the target directory path, prefix, 
+        starting count, and name format.
+
+        Parameters:
+            path (str): The path to the directory containing files to rename.
+            prefix (str): The prefix to use for renamed files.
+            count (int): The starting number for the file renaming sequence.
+            name_format (str): The format string for renaming files.
         """
         self.path = path
         self.prefix = prefix
@@ -50,10 +77,10 @@ class FileRenamer:
 
     def get_paths(self):
         """
-        Returns all the files and directories in the given path.
+        Retrieves all files and directories in the specified path.
 
         Returns:
-        list: A list of files and directories in the specified path.
+            list: A list of files and directories in the specified path.
         """
         return os.listdir(self.path)
 
@@ -62,23 +89,37 @@ class FileRenamer:
         Renames a file or folder from old_name to new_name.
 
         Parameters:
-        old_name (str): The current name of the file or folder.
-        new_name (str): The new name for the file or folder.
+            old_name (str): The current name of the file or folder.
+            new_name (str): The new name for the file or folder.
+
+        Returns:
+            None
         """
-        os.rename(old_name, new_name)
+        try:
+            os.rename(old_name, new_name)
+            logger.log(f"Renamed '{old_name}' to '{new_name}'", INFO)
+        except Exception as e:
+            logger.log(f"Error renaming '{old_name}' to '{new_name}': {str(e)}", ERROR)
 
     def rename_files(self):
         """
-        Renames all files in the specified directory to a sequentially numbered format with the prefix.
+        Renames all files in the specified directory to a sequentially numbered 
+        format with the prefix.
 
-        The function will:
-        1. Retrieve all files from the given directory.
-        2. Iterate through each file, generating a new name in the format '<PREFIX>-X.extension'.
-        3. Rename each file to the new name.
+        The function performs the following:
+        1. Retrieves all files from the specified directory.
+        2. Iterates through each file, generating a new name in the format 
+           '<PREFIX>-X.extension'.
+        3. Renames each file to the new name.
 
         Notes:
-        - This function does not handle subdirectories; it processes files in the specified directory only.
-        - Ensure the specified path is correct and you have appropriate permissions.
+            - The function does not handle subdirectories and processes files 
+              in the specified directory only.
+            - Ensure the specified path is correct and appropriate permissions 
+              are granted.
+
+        Returns:
+            None
         """
         files = self.get_paths()
 
@@ -89,3 +130,5 @@ class FileRenamer:
             new_path = os.path.join(self.path, new_name)
             self.rename_file(old_path, new_path)
             self.count += 1
+
+        logger.log(f"Renamed all files in {self.path}", INFO)

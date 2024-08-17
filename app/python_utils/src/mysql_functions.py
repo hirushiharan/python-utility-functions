@@ -1,6 +1,6 @@
 """
-Module: functions.py
-Description: Provides utility classes and functions for managing database operations and middleware in a FastAPI application.
+Module: mysql_functions.py
+Description: Provides utility classes and functions for managing MySQL database operations and middleware in a FastAPI application.
 
 This module includes:
 
@@ -29,7 +29,6 @@ Note:
 - Logging is managed through the Logger class defined in `log_message.py`.
 """
 
-
 import json
 import time
 from datetime import datetime
@@ -46,7 +45,6 @@ from .base_functions import Settings
 
 # Constants for log levels
 INFO = "INFO"
-WARNING = "WARNING"
 ERROR = "ERROR"
 
 # Initialize the logger
@@ -57,7 +55,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     """
     Middleware for logging HTTP request and response details.
 
-    This middleware logs information about incoming HTTP requests and outgoing responses,
+    Logs information about incoming HTTP requests and outgoing responses,
     including timestamp, method, URL, headers, and response status code.
 
     Methods:
@@ -66,11 +64,11 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         """
-        Log request details before processing and response details after processing.
+        Logs request details before processing and response details after processing.
 
         Args:
             request (Request): The incoming HTTP request object.
-            call_next (callable): A callable to invoke the next middleware or route handler.
+            call_next (Callable): A callable to invoke the next middleware or route handler.
 
         Returns:
             Response: The HTTP response object.
@@ -82,7 +80,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             "url": str(request.url),
             "headers": dict(request.headers)
         }
-        logger.log(message=json.dumps(log_message), level=INFO)
+        logger.log(json.dumps(log_message), INFO)
 
         # Process the request and get the response
         response = await call_next(request)
@@ -92,7 +90,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "status_code": response.status_code
         }
-        logger.log(message=json.dumps(log_message), level=INFO)
+        logger.log(json.dumps(log_message), INFO)
 
         return response
 
@@ -148,22 +146,11 @@ class MySqlConnection:
             settings = Settings()
         except ValidationError as e:
             # Log the detailed validation error for debugging
-            print(f"Error loading settings: {e}")
-
-            # Provide a user-friendly error message
-            print("Failed to load environment variables. Please check your .env file for correctness.")
-            print("""
-                Sample .env file is,
-                  
-                MYSQL_PASSWORD: str
-                MYSQL_DATABASE: str
-                MYSQL_USER: str
-                MYSQL_HOST: str
-                MYSQL_PORT: int
-                SECRET_KEY: str
-            """)
-
-            exit(1)
+            logger.log(f"Error loading settings: {e}", ERROR)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to load environment variables. Please check your .env file."
+            )
 
         for attempt in range(self.retries):
             try:
@@ -257,187 +244,155 @@ class MySqlResponse:
         Returns:
             Dict[str, Any]: The formatted JSON response with success status, result, headers, and optional error message.
         """
-
-        # Create response headers dynamically
         headers = {
             "Content-Length": str(len(str(self.result))),
             "Content-Type": self.response.headers.get("content-type", "application/json"),
-            "Date": self.response.headers.get("date"),
-            "Server": self.response.headers.get("server", "uvicorn")
+            "Server": "MySQL Response Server"
         }
-
-        # Create final response format
-        formatted_response = {
+        response_body = {
             "success": self.success,
-            "result": {
-                "statusCode": self.status_code,
-                "headers": headers,
-                "body": self.result
-            },
+            "result": self.result,
             "error": self.error
         }
-
-        return formatted_response
+        return {
+            "status_code": self.status_code,
+            "headers": headers,
+            "body": json.dumps(response_body)
+        }
 
     def format_error_response(self, e: Exception) -> JSONResponse:
         """
         Format the error response for HTTP exceptions.
 
         Args:
-            e (Exception): The exception object containing the error details.
+            e (Exception): The exception to be included in the response.
 
         Returns:
-            JSONResponse: A JSON response containing the error details including message and status code.
+            JSONResponse: The JSON response object containing error details.
         """
-        # Determine status code from the exception or default to 500
-        status_code = getattr(e, 'status_code', 500)
-        
-        # Extract error message from the exception
-        message = str(e.detail) if hasattr(e, 'detail') else str(e)
-        
-        # Create and return the JSON response with error details
         return JSONResponse(
-            content={"message": message},
-            status_code=status_code
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"success": False, "error": str(e)}
         )
 
 
 class MySqlExecution:
     """
-    Handles the execution of MySQL queries and transactions.
-
-    Provides methods for executing single MySQL statements and managing database transactions.
+    Provides methods for executing MySQL queries and transactions.
 
     Methods:
-        execute_single_query(query: str, params: Optional[Dict[str, Any]] = None): Executes a single MySQL query.
-        execute_transaction(queries: Dict[str, str], params: Optional[Dict[str, Any]] = None): Executes multiple MySQL queries within a transaction.
+        execute_query(query: str, params: Optional[Dict[str, Any]] = None): Executes a single MySQL query and returns the result.
+        execute_transaction(queries: Dict[str, Any]): Executes multiple MySQL queries within a transaction and returns the result.
     """
 
     @staticmethod
-    def execute_single_query(db_conn, query: str, params: Optional[Dict[str, Any]] = None) -> MySqlResponse:
+    def execute_query(query: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
-        Execute a single MySQL query and return a formatted JSON response.
+        Execute a single MySQL query and return the result.
 
         Args:
             query (str): The MySQL query to be executed.
-            params (Optional[Dict[str, Any]], optional): Parameters for the MySQL query. Defaults to None.
+            params (Optional[Dict[str, Any]], optional): Optional parameters for the query. Defaults to None.
 
         Returns:
-            MySqlResponse: The response object containing the success status, result, and optional error message.
+            Dict[str, Any]: The result of the query execution with success status and result.
         """
         try:
-            connection = db_conn
+            connection = MySqlConnection().get_db_connection()
             cursor = connection.cursor(dictionary=True)
             cursor.execute(query, params or ())
             result = cursor.fetchall()
             connection.commit()
             cursor.close()
             connection.close()
-            mysql_response = MySqlResponse(
+            return MySqlResponse(
                 success=True,
                 result=result,
                 status_code=status.HTTP_200_OK,
-                response=JSONResponse(content={"result": result}),
-            )
-            return mysql_response.format_response()
+                response=JSONResponse(content={}),
+            ).format_response()
         except Error as e:
-            mysql_response = MySqlResponse(
+            logger.log(f"Error executing query: {e}", ERROR)
+            return MySqlResponse(
                 success=False,
                 result={},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                response=JSONResponse(content={"message": str(e)}),
+                response=JSONResponse(content={}),
                 error=str(e)
-            )
-            return mysql_response.format_response()
+            ).format_error_response(e)
 
     @staticmethod
-    def execute_transaction(db_conn, queries: Dict[str, str], params: Optional[Dict[str, Any]] = None) -> MySqlResponse:
+    def execute_transaction(queries: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Execute multiple MySQL queries within a transaction and return a formatted JSON response.
+        Execute multiple MySQL queries within a transaction and return the result.
 
         Args:
-            queries (Dict[str, str]): Dictionary containing MySQL queries to be executed.
-            params (Optional[Dict[str, Any]], optional): Parameters for the MySQL queries. Defaults to None.
+            queries (Dict[str, Any]): A dictionary of MySQL queries to be executed with parameters.
 
         Returns:
-            MySqlResponse: The response object containing the success status, result, and optional error message.
+            Dict[str, Any]: The result of the transaction with success status and result.
         """
         try:
-            connection = db_conn
+            connection = MySqlConnection().get_db_connection()
             cursor = connection.cursor(dictionary=True)
-            for query in queries.values():
-                cursor.execute(query, params or ())
+            for query, params in queries.items():
+                cursor.execute(query, params)
             connection.commit()
             cursor.close()
             connection.close()
-            mysql_response = MySqlResponse(
+            return MySqlResponse(
                 success=True,
-                result={"message": "Transaction successful"},
+                result={},
                 status_code=status.HTTP_200_OK,
-                response=JSONResponse(content={"message": "Transaction successful"}),
-            )
-            return mysql_response.format_response()
+                response=JSONResponse(content={}),
+            ).format_response()
         except Error as e:
-            mysql_response = MySqlResponse(
+            logger.log(f"Error executing transaction: {e}", ERROR)
+            return MySqlResponse(
                 success=False,
                 result={},
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                response=JSONResponse(content={"message": str(e)}),
+                response=JSONResponse(content={}),
                 error=str(e)
-            )
-            return mysql_response.format_response()
+            ).format_error_response(e)
+
 
 class MySqlHandler:
     """
-    A class to handle MySQL operations with standard exception handling.
+    Executes asynchronous functions with standard exception handling and formats responses.
 
     Methods:
-        execute_with_handling(func, *args, **kwargs): Execute an asynchronous function with error handling.
+        execute_with_handling(func: Callable[..., Any], *args: Any, **kwargs: Any) -> JSONResponse: Executes a function with exception handling.
     """
+
     @staticmethod
-    async def execute_with_handling(func: Callable[..., Any], *args, **kwargs) -> JSONResponse:
+    async def execute_with_handling(func: Callable[..., Any], *args: Any, **kwargs: Any) -> JSONResponse:
         """
-        Executes an asynchronous function with standard exception handling, formatting responses for both success and error scenarios.
+        Executes a function with standard exception handling and formats responses.
 
         Args:
-            func (Callable[..., Any]): The asynchronous function to execute.
-            *args: Positional arguments to pass to the function.
-            **kwargs: Keyword arguments to pass to the function.
+            func (Callable[..., Any]): The function to be executed.
+            *args (Any): Positional arguments for the function.
+            **kwargs (Any): Keyword arguments for the function.
 
         Returns:
-            JSONResponse: A JSON response representing the result of the function or an error message.
+            JSONResponse: The JSON response object with success status or error details.
         """
         try:
-            # Attempt to execute the function and return its result
             result = await func(*args, **kwargs)
-            return result
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content={"success": True, "result": result}
+            )
         except HTTPException as e:
-            # Handle HTTP exceptions with specific formatting
-            error_response = JSONResponse(
-                content={"message": str(e.detail)},
-                status_code=e.status_code
-            )
-            mysql_response = MySqlResponse(
-                success=False,
-                result=None,
+            logger.log(f"HTTPException: {e.detail}", ERROR)
+            return JSONResponse(
                 status_code=e.status_code,
-                response=error_response,
-                error=str(e.detail)
+                content={"success": False, "error": e.detail}
             )
-            formatted_response = mysql_response.format_response()
-            return JSONResponse(content=formatted_response, status_code=e.status_code)
         except Exception as e:
-            # Handle other exceptions with generic formatting
-            error_response = JSONResponse(
-                content={"message": str(e)},
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-            mysql_response = MySqlResponse(
-                success=False,
-                result=None,
+            logger.log(f"Unhandled exception: {str(e)}", ERROR)
+            return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                response=error_response,
-                error=str(e)
+                content={"success": False, "error": str(e)}
             )
-            formatted_response = mysql_response.format_response()
-            return JSONResponse(content=formatted_response, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)

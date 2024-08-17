@@ -1,8 +1,47 @@
 """
-Module: auth_functions.py
-Description: This module contains utility functions for generating and decoding 
-JWT tokens for authentication purposes. It also includes proper error handling 
-and logging for better traceability.
+File: auth_functions.py
+
+Description:
+    This module provides utility functions for handling JWT (JSON Web Token) 
+    operations, including the generation and decoding of JWT tokens. These tokens 
+    are typically used for authentication and authorization purposes in web 
+    applications. The module includes error handling and logging capabilities 
+    to ensure smooth operation and traceability of the token management process.
+
+This module includes:
+
+**JwtAuthFunctions**: A utility class for generating and decoding JWT tokens, with options 
+        for setting expiration durations and using specific cryptographic 
+        algorithms. Includes methods for secure token management.
+
+    Methods:
+        __init__:
+            Initializes the JwtAuthFunctions class with the provided configurations 
+            for secret key, algorithm, auth_email, and token expiration duration.
+
+        generate_jwt_token:
+            Generates a JWT token based on the provided email and optional 
+            expiration duration. Logs the token creation process and handles errors.
+
+        decode_jwt_token:
+            Decodes a provided JWT token and returns its payload. Handles expired 
+            and invalid tokens with appropriate error responses.
+
+Imports:
+    - datetime, timedelta, timezone: For handling token expiration times.
+    - fastapi.status, HTTPException: For raising appropriate HTTP errors.
+    - typing.Dict: For type hinting the decoded JWT payload.
+    - jwt: For encoding and decoding JWT tokens.
+    - log_message.Logger: For logging messages.
+
+Note:
+    - Ensure that the `secret_key` is securely stored and not hard-coded in the 
+      application. It should be loaded from a secure environment variable or 
+      configuration file.
+    - The `algorithm` should be a robust cryptographic algorithm suitable for 
+      your application's security requirements.
+    - This module is designed to be used in web applications where JWT tokens 
+      are a part of the authentication and authorization mechanism.
 """
 
 from datetime import datetime, timedelta, timezone
@@ -13,7 +52,6 @@ from .log_message import Logger
 
 # Constants for log levels
 INFO = "INFO"
-WARNING = "WARNING"
 ERROR = "ERROR"
 
 # Initialize the logger
@@ -53,7 +91,7 @@ class JwtAuthFunctions:
 
     def generate_jwt_token(self) -> str:
         """
-        Generate a JWT token with or without an expiration time.
+        Generates a JWT token with or without an expiration time.
 
         Returns:
             str: The encoded JWT token.
@@ -63,7 +101,7 @@ class JwtAuthFunctions:
             Exception: If there is an error in token generation.
         """
         if not self.auth_email:
-            logger.log("Email must be provided to generate a JWT token.", ERROR)
+            logger.log("Email is not provided.", ERROR)
             raise ValueError("Email must be provided to generate a JWT token.")
         
         try:
@@ -72,9 +110,7 @@ class JwtAuthFunctions:
             if self.expiration_duration:
                 expiration = datetime.now(timezone.utc) + timedelta(hours=self.expiration_duration)
                 payload["exp"] = expiration
-                logger.log(f"JWT token generated successfully for email: {self.auth_email}. Token will expire in {self.expiration_duration} hours", INFO)
-            else:
-                logger.log(f"JWT token generated successfully for email: {self.auth_email} with no expiration", INFO)
+                logger.log(f"JWT token generated successfully. Token will expire in {self.expiration_duration} hours.", INFO)
             
             token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
             return token
@@ -83,10 +119,9 @@ class JwtAuthFunctions:
             logger.log(f"Error generating JWT token: {e}", ERROR)
             raise Exception("An error occurred while generating the JWT token.")
 
-
     def decode_jwt_token(self, token: str) -> Dict[str, str]:
         """
-        Decode a JWT token and return the payload.
+        Decodes a JWT token and returns the payload.
 
         Args:
             token (str): The JWT token to be decoded.
@@ -99,23 +134,26 @@ class JwtAuthFunctions:
             HTTPException: If the token is expired or invalid.
         """
         if not token:
-            logger.log("Token must be provided to decode a JWT token.", ERROR)
+            logger.log("Token is not provided.", ERROR)
             raise ValueError("Token must be provided to decode a JWT token.")
         
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
-            logger.log(f"JWT token decoded successfully for email: {payload.get('email')}", INFO)
+            logger.log("JWT token decoded successfully.", INFO)
             return payload
+
         except jwt.ExpiredSignatureError:
-            logger.log("Token has expired.", WARNING)
+            logger.log("Token has expired.", ERROR)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
             )
+
         except jwt.InvalidTokenError:
-            logger.log("Invalid token.", WARNING)
+            logger.log("Invalid token.", ERROR)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
+
         except Exception as e:
             logger.log(f"Error decoding JWT token: {e}", ERROR)
             raise HTTPException(
