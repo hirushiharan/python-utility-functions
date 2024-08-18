@@ -1,26 +1,16 @@
-# Changelog
+# Release Notes
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
-
-### Added
-- List new features added in the upcoming release.
-
-### Changed
-- List changes and improvements in existing features.
-
-### Deprecated
-- List any features that are deprecated and may be removed in future releases.
+## [1.5.0] - 2024-08-18
 
 ### Removed
-- List features or functionality that have been removed.
+- Script to MySQL database connection.
 
-### Fixed
-- List any bug fixes or issues resolved.
-
-### Security
-- List any security improvements or fixes.
+### Changed
+- Modified send Email method
+- Refactor & formated code
+- Updated README
 
 ## [1.4.0] - 2024-08-04
 
