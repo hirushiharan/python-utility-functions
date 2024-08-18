@@ -36,7 +36,7 @@ class TestExcelFunctions(unittest.TestCase):
 
         # Create an instance of WriteToExcel to write data to the Excel file
         excel_writer = WriteToExcel(file_path)
-        excel_writer.write_data_to_excel(file_path, "sheet_1", 0, 0, headers, scores)
+        excel_writer.write_data_to_excel("sheet_1", headers, scores)
 
         # Create an instance of ExcelReader to read data from the Excel file
         excel_reader = ExcelReader(file_path, selected_columns=['name', 'score'])

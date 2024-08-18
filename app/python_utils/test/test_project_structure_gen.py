@@ -25,7 +25,8 @@ class TestProjectStructure(unittest.TestCase):
         """
         self.root_path = r'D:\repos\current\python-utility-functions'
         self.gitignore_file = os.path.join(self.root_path, '.gitignore')
-        self.structure_path = os.path.join(self.root_path, r'app\python_utils\src\local_test\structure.md')
+        self.md_file = 'structure.md'
+        self.structure_path = os.path.join(self.root_path, r'app\python_utils\src\local_test', self.md_file)
         self.project_structure = ProjectStructure(self.root_path, self.gitignore_file, self.structure_path)
 
     def tearDown(self):
