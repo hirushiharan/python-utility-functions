@@ -131,7 +131,7 @@ This script provides a flexible logging mechanism that supports logging messages
     # Remove an existing log level
     logger.remove_log_level("DEBUG")
 
-### [`src/mysql_functions.py`](src/mysql_functions.py)
+### [`mysql_functions.py`](python_utils/src/mysql_functions.py)
 
 This script provides functionalities for establishing a connection to a MySQL database, executing MySQL queries, and managing the database connection. It uses the mysql-connector-python library and supports environment variable management using the python-dotenv library.
 
@@ -197,12 +197,27 @@ This script provides functionalities for establishing a connection to a MySQL da
     if __name__ == '__main__':
         main()
 
-### [`src/project_structure_gen.py`](src/project_structure_gen.py)
+### [`project_structure_gen.py`](python_utils/src/project_structure_gen.py)
 
 This script is designed to facilitate the creation of a comprehensive directory structure for your projects, with the added ability to generate a Markdown file documenting this structure. Utilizing the mysql-connector-python library, it also supports database interactions, and environment variables can be managed efficiently using the python-dotenv library.
 
 #### Class:
 - **ProjectStructure**: A class that handles the generation of the project's directory structure and the creation of a corresponding Markdown file.
+
+    ***Attributes:***
+        - `root_dir` (str): The root path for the directory.
+        - `gitignore_file` (str): Path of the gitignore file.
+        - `custom_patterns` (str): List of custom patterns to ignore.
+        - `md_file` (str): Path of the generated Markdown file.
+
+    ***Methods:***
+    - `read_gitignore_patterns() -> None`: Reads the .gitignore file and returns a list of patterns.
+    - `is_ignored() -> Bool`: Checks if a given path matches any of the .gitignore patterns.
+    - `get_project_structure() -> List`: Generates the directory structure of the project, excluding ignored files and directories.
+    - `format_structure(structure: list) -> str`: Formats the project structure into a hierarchical text format.
+    - `add_path(formatted: List, path: str, depth: int) -> None`: Adds paths to the formatted list with correct indentation.
+    - `create_md_file() -> None`: Ensures the Markdown file exists. If it does not exist, creates an empty file.
+    - `generate() -> None`: Generates the project structure and writes it to the Markdown file.
 
 #### Usage:
 - The script can be seamlessly integrated into any project where there's a need to generate and document the project's directory structure in Markdown format.
@@ -228,7 +243,7 @@ This script is designed to facilitate the creation of a comprehensive directory 
     project_structure.generate()
 
 
-### [`src/base_functions.py`](src/base_functions.py)
+### [`base_functions.py`](python_utils/src/base_functions.py)
 
 This script is designed to provides utility classes and functions essential for environment variables configuration, secure secret key generation, password management, and email functionality. These utilities can be reused across various projects to streamline common tasks such as configuration management and secure operations.
 
@@ -268,6 +283,7 @@ This script is designed to provides utility classes and functions essential for 
 
 
 - **EmailFunction**: Class simplifies the process of sending emails via an SMTP server. It handles the creation and structuring of email messages using the `email.mime` library.
+
     ***Methods:***
     - `send_email(subject: str, body: str, to_email: str, from_email: str, smtp_server: str, smtp_port: int, smtp_user: str, smtp_password: str) -> None`: Sends an email with the specified subject and body to a given recipient.
 
@@ -332,11 +348,9 @@ This script is designed to provides utility classes and functions essential for 
 
     print("Email sent successfully!")
 
-### [`src/auth_functions.py`](src/auth_functions.py)
+### [`auth_functions.py`](python_utils/src/auth_functions.py)
 
 This script is designed to provides utility functions for generating and decoding JWT tokens, crucial for authentication purposes. It also includes error handling and logging for better traceability and debugging.
-
-
 
 #### Class:
 - **JwtAuthFunctions**: A utility class for handling JWT token operations including generation and decoding of tokens.
@@ -348,10 +362,9 @@ This script is designed to provides utility functions for generating and decodin
     - `auth_email (str)`: The email address used as a payload for generating the JWT token.
     - `expiration_duration (int)`: The token's expiration duration in hours (default is `1` hour).
 
-
-    ***Methods:***
-    - `__init__(self, auth_email: str = None, expiration_duration: int = 1, secret_key: str = None, algorithm: str = "HS256") -> None`
-
+    ***methods:***
+    - `generate_jwt_token() -> str`: Generates a JWT token based on the provided email and optional expiration duration and returns the encoded JWT token.
+    - `decode_jwt_token(token: str) -> Dict[str, str]`: Decodes a provided JWT token and returns its payload.
 
 #### Usage:
 - The script can be seamlessly integrated into any project where there's a need to provide authentication functions.
