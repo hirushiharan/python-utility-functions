@@ -10,7 +10,7 @@ with open("app/README.md", "r") as f:
 
 setup(
     name="py_utility_scripts",
-    version="1.5.0",
+    version="1.5.1",
     description="A collection of utility scripts for working with files, Excel, logging, and database connections.",
     package_dir={"": "app"},
     packages=find_packages(where="app"),
@@ -26,7 +26,7 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Operating System :: OS Independent",
     ],
-    install_requires=requirements,
+    install_requires=['xlsxwriter', 'openpyxl', 'pandas', 'python-dotenv', 'pydantic-settings', 'mysql-connector-python', 'fastapi', 'uvicorn', 'PyJWT', 'email-validator'],
     extras_require={
         "dev": ["pytest", "pytest-asyncio", "twine"],
     },
