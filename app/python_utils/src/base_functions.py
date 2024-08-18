@@ -46,6 +46,7 @@ ERROR = "ERROR"
 # Initialize the logger
 logger = Logger()
 
+
 class Settings(BaseSettings):
     """
     Configuration class for loading settings from environment variables.
@@ -76,10 +77,10 @@ class Settings(BaseSettings):
 
     class Config:
         """
-        Pydantic configuration class.
+        Pydantic configuration class for specifying the .env file and handling extra fields.
         """
         env_file = ".env"
-        extra = "allow"  # Allow extra fields not defined in the model
+        extra = "allow"
 
     @classmethod
     def config(cls) -> ConfigDict:
@@ -277,57 +278,40 @@ class EmailFunction:
         self.subject = subject
         self.body = body
         self.body_type = body_type
-        self.server = None
-
-    def validate_email(self, email: str) -> bool:
-        """
-        Validates an email address.
-
-        Args:
-            email (str): Email address to be validated.
-
-        Returns:
-            bool: True if the email is valid, False otherwise.
-        """
-        try:
-            validate_email(email)
-            logger.log(f"Email address '{email}' is valid.", INFO)
-            return True
-        except EmailNotValidError as e:
-            logger.log(f"Email validation failed for '{email}': {str(e)}", ERROR)
-            return False
 
     def send_email(self) -> None:
         """
         Sends an email using the configured SMTP server.
 
         Raises:
-            ValueError: If the email addresses are invalid.
+            EmailNotValidError: If the sender or recipient email is not valid.
+            Exception: If there is an issue with the SMTP connection or sending the email.
         """
-        if not self.validate_email(self.sender_email) or not self.validate_email(self.recipient_email):
-            logger.log("Failed to send email due to invalid sender or recipient email address.", ERROR)
-            raise ValueError("Invalid sender or recipient email address.")
-        
         try:
-            # Create email message
-            message = MIMEMultipart()
-            message['From'] = self.sender_email
-            message['To'] = self.recipient_email
-            message['Subject'] = self.subject
+            # Validate email addresses
+            validate_email(self.sender_email)
+            validate_email(self.recipient_email)
+            logger.log("Email addresses validated successfully.", INFO)
 
-            # Attach the body with the MIME
-            body_part = MIMEText(self.body, self.body_type)
-            message.attach(body_part)
+            # Prepare the email message
+            msg = MIMEMultipart()
+            msg['From'] = self.sender_email
+            msg['To'] = self.recipient_email
+            msg['Subject'] = self.subject
 
-            # Connect to SMTP server and send email
-            self.server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            self.server.starttls()
-            self.server.login(self.smtp_username, self.smtp_password)
-            self.server.send_message(message)
-            logger.log(f"Email sent successfully to {self.recipient_email}.", INFO)
+            msg.attach(MIMEText(self.body, self.body_type))
+            logger.log("Email message prepared successfully.", INFO)
+
+            # Send the email via SMTP server
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                server.starttls()
+                server.login(self.smtp_username, self.smtp_password)
+                server.send_message(msg)
+                logger.log(f"Email sent successfully to {self.recipient_email}.", INFO)
+
+        except EmailNotValidError as e:
+            logger.log(f"Invalid email address: {str(e)}", ERROR)
+            raise
         except Exception as e:
-            logger.log(f"Exception occurred while sending email: {str(e)}", ERROR)
-        finally:
-            if self.server:
-                self.server.quit()
-                logger.log("SMTP server connection closed.", INFO)
+            logger.log(f"Failed to send email: {str(e)}", ERROR)
+            raise
