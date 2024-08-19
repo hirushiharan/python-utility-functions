@@ -35,7 +35,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email_validator import validate_email, EmailNotValidError
-from .log_message import Logger
+from log_message import Logger
 from typing import ClassVar
 import os
 

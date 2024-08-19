@@ -19,7 +19,7 @@ Usage:
 import os
 import fnmatch
 from pathlib import Path
-from .log_message import Logger
+from log_message import Logger
 
 # Constants for log levels
 INFO = "INFO"

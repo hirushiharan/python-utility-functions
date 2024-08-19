@@ -40,8 +40,8 @@ from fastapi.responses import JSONResponse
 from typing import Dict, Any, Optional, Callable
 from mysql.connector.pooling import MySQLConnectionPool
 from starlette.middleware.base import BaseHTTPMiddleware
-from .log_message import Logger
-from .base_functions import Settings
+from log_message import Logger
+from base_functions import Settings
 
 # Constants for log levels
 INFO = "INFO"

@@ -18,7 +18,7 @@ Imports:
 
 import pandas as pd
 import xlsxwriter
-from .log_message import Logger
+from log_message import Logger
 
 # Constants for log levels
 INFO = "INFO"

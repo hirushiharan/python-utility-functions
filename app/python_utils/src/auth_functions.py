@@ -48,7 +48,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import status, HTTPException
 from typing import Dict
 import jwt
-from .log_message import Logger
+from log_message import Logger
 
 # Constants for log levels
 INFO = "INFO"
