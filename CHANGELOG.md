@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.5.1] - 2024-08-18
+## [1.5.2] - 2024-08-18
 
 ### Fixed
 - Dependancy error.
