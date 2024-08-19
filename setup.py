@@ -26,7 +26,7 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Operating System :: OS Independent",
     ],
-    install_requires=['xlsxwriter', 'openpyxl', 'pandas', 'python-dotenv', 'pydantic-settings', 'mysql-connector-python', 'fastapi', 'uvicorn', 'PyJWT', 'email-validator'],
+    install_requires=requirements,
     extras_require={
         "dev": ["pytest", "pytest-asyncio", "twine"],
     },
