@@ -44,9 +44,4 @@ venv.bak/
 .vscode
 
 # Files
-/logs
 /my_notes
-**/local_test
-**/test.py
-**/**test.py
-test_requirements.txt
