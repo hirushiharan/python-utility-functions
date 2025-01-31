@@ -1,4 +1,8 @@
 from setuptools import setup, find_packages
+from app.logging_config import setup_logging
+
+# Set up logging configuration
+setup_logging()
 
 # Read the requirements
 with open("app/requirements.txt") as f:
@@ -10,8 +14,8 @@ with open("app/README.md", "r") as f:
 
 setup(
     name="py_utility_scripts",
-    version="1.5.2",
-    description="A collection of utility scripts for working with files, Excel, logging, and database connections.",
+    version="2.0.0",
+    description="A collection of utility scripts for working with files, Excel, and database connections.",
     package_dir={"": "app"},
     packages=find_packages(where="app"),
     long_description=long_description,
