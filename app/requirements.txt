@@ -1,0 +1,12 @@
+### Excel
+xlsxwriter
+openpyxl
+pandas
+
+### Email
+email-validator
+
+### Password
+cryptography
+passlib
+bcrypt
